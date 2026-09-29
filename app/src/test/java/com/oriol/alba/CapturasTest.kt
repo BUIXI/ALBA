@@ -170,6 +170,39 @@ class CapturasTest {
     capturar("alarma_hecha")
   }
 
+  // --- En inglés (el idioma por defecto): que ningún texto se corte ---
+
+  @Test
+  @Config(qualifiers = "+en-rUS")
+  fun listaEnIngles() {
+    composeRule.setContent { TemaAlba { ListaAlarmas(ejemplo, ahora, {}, {}, { _, _ -> }, avisoPermisos = true) } }
+    capturar("en_lista")
+  }
+
+  @Test
+  @Config(qualifiers = "+en-rUS-h1500dp")
+  fun editorEnIngles() {
+    composeRule.setContent { TemaAlba { EditorAlarma(ejemplo[1], false, { _, _ -> }, {}, {}, {}, {}, {}, {}) } }
+    capturar("en_editor")
+  }
+
+  @Test
+  @Config(qualifiers = "+en-rUS")
+  fun alarmaSonandoEnIngles() {
+    composeRule.setContent {
+      TemaAlba(PaletaClara) { AlarmaSonando(ejemplo[1], LocalDateTime.of(2026, 9, 30, 7, 0), prueba = false, onDespierto = {}) }
+    }
+    capturar("en_alarma_sonando")
+  }
+
+  @Test
+  @Config(qualifiers = "+en-rUS")
+  fun permisosEnIngles() {
+    val estado = EstadoPermisos(notificaciones = true, pantallaCompleta = false, alarmasExactas = true, segundoPlano = true, sinOptimizarBateria = false)
+    composeRule.setContent { TemaAlba { ListaPermisos(estado, "Realme", {}, {}, {}, {}, {}, {}, {}) } }
+    capturar("en_permisos")
+  }
+
   /** El icono de la app con las máscaras más comunes: círculo y "squircle". */
   @Test
   fun icono() {

@@ -5,7 +5,12 @@ probarla en el móvil: [`PRUEBAS_EN_EL_MOVIL.md`](PRUEBAS_EN_EL_MOVIL.md).
 
 ## Estado
 
-Versión **0.1**: primera versión funcional (MVP), pendiente de probar en el Realme.
+Versión **0.1.1**: primera versión funcional (MVP), pendiente de probar en el Realme.
+
+**Idiomas** (0.1.1): inglés por defecto (`values/`) y español (`values-es/`); la app
+elige sola según el idioma del móvil. Los días, el primer día de la semana y las
+fechas ya salen del idioma. Pendiente: formato de 12 h (AM/PM) para quien lo use,
+selector de idioma por app (Android 13+) y más idiomas.
 
 | Fase | Estado | Documento |
 |---|---|---|

@@ -52,6 +52,10 @@ $env:JAVA_TOOL_OPTIONS = "-Djdk.net.unixdomain.tmpdir=$PWD\.gradle\tmp-java"
 ## Cómo se trabaja
 
 - Fase a fase (plan en `docs/PRODUCTO.md`). Código **comentado en español**.
+- **Idiomas**: la app sale en el idioma del móvil. `values/strings.xml` es el
+  inglés (el que se ve si el idioma no está traducido) y `values-es/` el español.
+  Todo texto nuevo va en los dos, con la misma clave (si falta, el *lint* da error).
+  Las capturas `en_*` comprueban el inglés.
 - Pruebas y capturas en verde **varias veces** antes de dar una fase por cerrada.
 - Lo visual se decide **mirando las capturas**, no razonando.
 - Al cerrar una fase: su documento en `docs/fases/faseNN-*.md` y `docs/INDICE.md`
