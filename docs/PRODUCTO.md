@@ -20,12 +20,15 @@ Se publicará en Google Play y se monetizará (ver más abajo).
   segundo plano. Móvil de pruebas: **Realme 14 Pro+** (Realme UI, Android 15), que
   es de los agresivos.
 - **Tareas intercambiables**, todas detrás de la misma interfaz:
-  - *Foto de categoría*: ML Kit en el móvil ("hazle una foto al microondas" y el
-    modelo confirma que lo ve). Gratis y sin conexión.
+  - *Foto de categoría*: ML Kit en el móvil ("enséñale a la cámara el fregadero" y
+    el modelo confirma que lo ve). Gratis y sin conexión. **Hecha en la 0.1.** El
+    modelo base no conoce "nevera" ni "microondas": se piden fregadero, taza, sofá,
+    tele, zapatos, planta, cubiertos y cocina.
   - *Foto ancla*: al configurar registras 3-4 objetos de tu casa (nevera, cafetera,
     cepillo...). Por la mañana se pide uno al azar y se compara con la foto de
     referencia por similitud de *embeddings*, en local. Obliga a levantarse y
-    andar. Solo cámara, nunca galería.
+    andar. Solo cámara, nunca galería. **Pendiente** (necesita un modelo de
+    *embeddings* y calibrarlo con fotos reales).
   - *Cálculo mental, pasos, sacudir, QR*: sin IA. Son el respaldo sin conexión.
   - *Voz*: reconocimiento de voz de Android, que funciona sin conexión (leer una
     frase en voz alta).

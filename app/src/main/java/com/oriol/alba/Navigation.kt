@@ -14,7 +14,10 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
+import androidx.compose.ui.platform.LocalContext
+import com.oriol.alba.alarma.ServicioAlarma
 import com.oriol.alba.datos.RepositorioAlarmas
+import com.oriol.alba.ui.permisos.PantallaPermisos
 import com.oriol.alba.ui.editor.EditorViewModel
 import com.oriol.alba.ui.editor.PantallaEditor
 import com.oriol.alba.ui.lista.ListaViewModel
@@ -24,6 +27,7 @@ import com.oriol.alba.ui.lista.PantallaLista
 @Composable
 fun NavegacionAlba(repositorio: RepositorioAlarmas) {
   val pila = rememberNavBackStack(Lista)
+  val context = LocalContext.current
 
   NavDisplay(
     backStack = pila,
@@ -37,14 +41,17 @@ fun NavegacionAlba(repositorio: RepositorioAlarmas) {
             vm = viewModel { ListaViewModel(repositorio) },
             onNueva = { pila.add(Editor()) },
             onAbrir = { id -> pila.add(Editor(id)) },
+            onPermisos = { pila.add(ClavePermisos) },
           )
         }
         entry<Editor>(metadata = TransicionModal) { clave ->
           PantallaEditor(
             vm = viewModel { EditorViewModel(repositorio, clave.alarmaId) },
             onCerrar = { pila.removeLastOrNull() },
+            onProbar = { alarma -> ServicioAlarma.probar(context, alarma) },
           )
         }
+        entry<ClavePermisos>(metadata = TransicionModal) { PantallaPermisos(onVolver = { pila.removeLastOrNull() }) }
       },
   )
 }

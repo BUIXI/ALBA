@@ -22,6 +22,9 @@ roborazzi = "1.75.0"
 # Base de datos local de las alarmas. KSP genera el código de Room.
 room = "2.8.4"
 ksp = "2.3.12"
+# Tarea de foto: cámara y reconocimiento de objetos en el móvil (sin internet)
+camerax = "1.5.3"
+mlkitEtiquetas = "17.0.9"
 
 [libraries]
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidxCore" }
@@ -52,6 +55,10 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "room" }
+androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.ref = "camerax" }
+androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "camerax" }
+androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "camerax" }
+mlkit-etiquetas = { module = "com.google.mlkit:image-labeling", version.ref = "mlkitEtiquetas" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "androidGradlePlugin" }

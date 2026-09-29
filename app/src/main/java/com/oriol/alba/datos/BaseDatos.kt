@@ -17,6 +17,9 @@ interface AlarmaDao {
   /** Todas, de la más temprana a la más tardía. Se vuelve a emitir con cada cambio. */
   @Query("SELECT * FROM alarmas ORDER BY hora, minuto, id") fun todas(): Flow<List<Alarma>>
 
+  /** Todas, una sola vez (para reprogramarlas). */
+  @Query("SELECT * FROM alarmas") suspend fun todasAhora(): List<Alarma>
+
   @Query("SELECT * FROM alarmas WHERE id = :id") suspend fun obtener(id: Long): Alarma?
 
   /** Inserta o actualiza. Devuelve el id nuevo al insertar y -1 al actualizar. */
@@ -43,8 +46,13 @@ abstract class BaseDatos : RoomDatabase() {
   abstract fun alarmas(): AlarmaDao
 
   companion object {
+    /**
+     * La base de datos vive en el almacenamiento protegido del dispositivo, no en el
+     * normal: así se puede leer antes del primer desbloqueo. Si el móvil se reinicia
+     * de madrugada (una actualización), las alarmas se reprograman y suenan igual.
+     */
     fun abrir(context: Context): BaseDatos =
-      Room.databaseBuilder(context, BaseDatos::class.java, "alba.db").build()
+      Room.databaseBuilder(context.createDeviceProtectedStorageContext(), BaseDatos::class.java, "alba.db").build()
 
     /** Solo para pruebas: vive en memoria y desaparece al cerrarla. */
     fun enMemoria(context: Context): BaseDatos =

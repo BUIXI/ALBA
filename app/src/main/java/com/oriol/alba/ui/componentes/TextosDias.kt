@@ -7,7 +7,21 @@ import com.oriol.alba.R
 import com.oriol.alba.dominio.ResumenDias
 import com.oriol.alba.dominio.resumirDias
 import java.time.DayOfWeek
+import java.time.LocalDateTime
 import java.time.format.TextStyle
+import java.time.temporal.ChronoUnit
+
+/** "hoy a las 07:00", "mañana a las 07:00" o "el lunes a las 07:00". */
+@Composable
+fun textoCuando(momento: LocalDateTime, ahora: LocalDateTime): String {
+  val idioma = LocalConfiguration.current.locales[0]
+  val hora = formatoHora(momento.hour, momento.minute)
+  return when (ChronoUnit.DAYS.between(ahora.toLocalDate(), momento.toLocalDate())) {
+    0L -> stringResource(R.string.hoy_a_las, hora)
+    1L -> stringResource(R.string.manana_a_las, hora)
+    else -> stringResource(R.string.el_dia_a_las, momento.dayOfWeek.getDisplayName(TextStyle.FULL, idioma), hora)
+  }
+}
 
 /** "Entre semana", "Fin de semana", "Lun, Mié, Vie"... en el idioma del móvil. */
 @Composable

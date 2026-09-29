@@ -5,6 +5,7 @@ build/
 /captures/
 *.apk
 *.aab
+/entregas/
 
 # Rutas locales del SDK (cada PC tiene la suya)
 local.properties

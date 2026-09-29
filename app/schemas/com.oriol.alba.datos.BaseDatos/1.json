@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "b77e68fda27e6c4f4bd5636057b47ce4",
+    "identityHash": "6135500087a33c5bf65e1802a38f0ced",
     "entities": [
       {
         "tableName": "alarmas",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `hora` INTEGER NOT NULL, `minuto` INTEGER NOT NULL, `dias` INTEGER NOT NULL, `activa` INTEGER NOT NULL, `etiqueta` TEXT NOT NULL, `tarea` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `hora` INTEGER NOT NULL, `minuto` INTEGER NOT NULL, `dias` INTEGER NOT NULL, `activa` INTEGER NOT NULL, `etiqueta` TEXT NOT NULL, `tarea` TEXT NOT NULL, `sonido` TEXT NOT NULL, `comprobar` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "id",
@@ -49,6 +49,18 @@
             "columnName": "tarea",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "sonido",
+            "columnName": "sonido",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "comprobar",
+            "columnName": "comprobar",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -61,7 +73,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'b77e68fda27e6c4f4bd5636057b47ce4')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '6135500087a33c5bf65e1802a38f0ced')"
     ]
   }
 }

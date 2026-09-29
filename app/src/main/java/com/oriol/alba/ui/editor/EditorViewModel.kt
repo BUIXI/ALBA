@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.oriol.alba.datos.Alarma
 import com.oriol.alba.datos.RepositorioAlarmas
+import com.oriol.alba.datos.Sonido
 import com.oriol.alba.datos.TipoTarea
 import java.time.DayOfWeek
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,6 +42,10 @@ class EditorViewModel(private val repositorio: RepositorioAlarmas, private val a
   fun cambiarTarea(tarea: TipoTarea) {
     if (tarea.disponible) editar { it.copy(tarea = tarea) }
   }
+
+  fun cambiarSonido(sonido: Sonido) = editar { it.copy(sonido = sonido) }
+
+  fun cambiarComprobar(comprobar: Boolean) = editar { it.copy(comprobar = comprobar) }
 
   /** Guarda (y activa: quien la guarda es porque la quiere) y luego llama a [alTerminar]. */
   fun guardar(alTerminar: () -> Unit) {

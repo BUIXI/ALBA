@@ -1,6 +1,17 @@
 package com.oriol.alba.ui.lista
 
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.width
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.Role
+import com.oriol.alba.alarma.Permisos
+import com.oriol.alba.ui.componentes.EsquinaGrupo
+import com.oriol.alba.ui.permisos.rememberEstadoPermisos
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -42,14 +53,25 @@ import java.time.format.TextStyle
 
 /** Pantalla principal: la lista de alarmas. */
 @Composable
-fun PantallaLista(vm: ListaViewModel, onNueva: () -> Unit, onAbrir: (Long) -> Unit) {
+fun PantallaLista(vm: ListaViewModel, onNueva: () -> Unit, onAbrir: (Long) -> Unit, onPermisos: () -> Unit) {
   val alarmas by vm.alarmas.collectAsStateWithLifecycle()
+  val permisos = rememberEstadoPermisos()
+  // En cuanto hay una alarma, el diálogo de notificaciones (sin ellas no se ve la alarma).
+  val pedirNotificaciones = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {}
+  val hayAlarmas = alarmas?.isNotEmpty() == true
+  LaunchedEffect(hayAlarmas) {
+    if (hayAlarmas && !permisos.notificaciones && Permisos.notificacionesConDialogo) {
+      pedirNotificaciones.launch(Manifest.permission.POST_NOTIFICATIONS)
+    }
+  }
   ListaAlarmas(
     alarmas = alarmas,
     ahora = rememberAhora(),
     onNueva = onNueva,
     onAbrir = onAbrir,
     onCambiarActiva = vm::cambiarActiva,
+    avisoPermisos = !permisos.imprescindibles,
+    onPermisos = onPermisos,
   )
 }
 
@@ -62,6 +84,8 @@ fun ListaAlarmas(
   onAbrir: (Long) -> Unit,
   onCambiarActiva: (Long, Boolean) -> Unit,
   modifier: Modifier = Modifier,
+  avisoPermisos: Boolean = false,
+  onPermisos: () -> Unit = {},
 ) {
   Pantalla(modifier) {
     // Barra superior: solo el "+", a la derecha, como en el reloj de iOS.
@@ -82,6 +106,7 @@ fun ListaAlarmas(
     if (alarmas == null) return@Pantalla
 
     if (alarmas.isEmpty()) {
+      if (avisoPermisos) AvisoPermisos(onPermisos)
       EstadoVacio(onNueva, Modifier.weight(1f))
     } else {
       Text(
@@ -90,6 +115,7 @@ fun ListaAlarmas(
         color = Alba.colores.textoSecundario,
         modifier = Modifier.padding(start = 20.dp, end = 20.dp, top = 2.dp),
       )
+      if (avisoPermisos) AvisoPermisos(onPermisos)
       LazyColumn(Modifier.weight(1f), contentPadding = PaddingValues(top = 16.dp, bottom = 32.dp)) {
         itemsIndexed(alarmas, key = { _, alarma -> alarma.id }) { indice, alarma ->
           Column(Modifier.animateItem()) {
@@ -137,6 +163,29 @@ private fun FilaAlarma(alarma: Alarma, onClick: () -> Unit, onCambiarActiva: (Bo
       onCambio = onCambiarActiva,
       descripcion = stringResource(R.string.alarma_de_las, hora),
     )
+  }
+}
+
+/** Aviso ámbar y discreto: falta algún permiso imprescindible. Lleva a la pantalla de permisos. */
+@Composable
+private fun AvisoPermisos(onClick: () -> Unit) {
+  Row(
+    Modifier.padding(start = 16.dp, end = 16.dp, top = 14.dp)
+      .fillMaxWidth()
+      .clip(EsquinaGrupo)
+      .clickable(role = Role.Button, onClick = onClick)
+      .background(Alba.colores.acento.copy(alpha = 0.16f))
+      .padding(horizontal = 16.dp, vertical = 12.dp),
+    verticalAlignment = Alignment.CenterVertically,
+  ) {
+    Text(
+      stringResource(R.string.permisos_aviso),
+      style = Alba.tipos.secundario,
+      color = Alba.colores.texto,
+      modifier = Modifier.weight(1f),
+    )
+    Spacer(Modifier.width(12.dp))
+    Text(stringResource(R.string.revisar), style = Alba.tipos.cabecera, color = Alba.colores.acento)
   }
 }
 

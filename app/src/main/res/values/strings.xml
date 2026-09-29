@@ -13,13 +13,18 @@
     <string name="proxima_el_dia">Próxima alarma el %1$s</string>
     <string name="ninguna_activa">Ninguna alarma activada</string>
     <string name="alarma_de_las">Alarma de las %1$s</string>
+    <string name="permisos_aviso">Falta un permiso para que la alarma suene siempre.</string>
+    <string name="revisar">Revisar</string>
 
-    <!-- Días -->
+    <!-- Días y momentos -->
     <string name="una_vez">Una vez</string>
     <string name="todos_los_dias">Todos los días</string>
     <string name="entre_semana">Entre semana</string>
     <string name="fin_de_semana">Fin de semana</string>
     <string name="separador_detalle">" · "</string>
+    <string name="hoy_a_las">hoy a las %1$s</string>
+    <string name="manana_a_las">mañana a las %1$s</string>
+    <string name="el_dia_a_las">el %1$s a las %2$s</string>
 
     <!-- Editor -->
     <string name="editar_alarma">Editar alarma</string>
@@ -33,9 +38,89 @@
     <string name="etiqueta_por_defecto">Alarma</string>
     <string name="para_apagarla">Para apagarla</string>
     <string name="tarea_calculo">Cálculo mental</string>
-    <string name="tarea_calculo_desc">Resuelve unas operaciones sencillas.</string>
+    <string name="tarea_calculo_desc">Resuelve tres operaciones sencillas.</string>
     <string name="tarea_foto">Foto de un objeto</string>
-    <string name="tarea_foto_desc">Levántate y hazle una foto a algo de tu casa.</string>
+    <string name="tarea_foto_desc">Levántate y enséñale a la cámara algo de tu casa: el fregadero, una taza, el sofá…</string>
     <string name="pronto">Pronto</string>
+    <string name="sonido">Sonido</string>
+    <string name="sonido_amanecer">Amanecer</string>
+    <string name="sonido_amanecer_desc">Un carillón suave que va subiendo.</string>
+    <string name="sonido_sistema">Alarma del teléfono</string>
+    <string name="sonido_sistema_desc">El sonido de alarma que tengas en el móvil.</string>
+    <string name="despues_de_apagarla">Después de apagarla</string>
+    <string name="comprobar">Comprobar a los %1$d min</string>
+    <string name="comprobar_pie">Te preguntará si sigues despierto. Si no respondes en un minuto, vuelve a sonar.</string>
+    <string name="probar_alarma">Probar la alarma</string>
+    <string name="probar_pie">Suena ahora mismo, tal cual sonará. Así ves cómo se apaga.</string>
     <string name="eliminar_alarma">Eliminar alarma</string>
+
+    <!-- Pantalla de la alarma -->
+    <string name="prueba">Prueba</string>
+    <string name="estoy_despierto">Estoy despierto</string>
+    <plurals name="pista_calculo">
+        <item quantity="one">Después tendrás que resolver %d operación.</item>
+        <item quantity="other">Después tendrás que resolver %d operaciones.</item>
+    </plurals>
+    <string name="pista_foto">Después tendrás que enseñarle a la cámara algo de tu casa.</string>
+    <string name="silencio_quedan">Silencio · vuelve a sonar en %1$d s</string>
+    <string name="sonando_foto">Suena · encuentra el objeto para apagarla</string>
+    <string name="ensenale">Enséñale a la cámara</string>
+    <string name="objeto_fregadero">un fregadero o un lavabo</string>
+    <string name="objeto_taza">una taza</string>
+    <string name="objeto_sofa">el sofá</string>
+    <string name="objeto_tele">la tele</string>
+    <string name="objeto_zapatos">tus zapatos</string>
+    <string name="objeto_planta">una planta</string>
+    <string name="objeto_cubiertos">unos cubiertos o un plato</string>
+    <string name="objeto_cocina">la cocina</string>
+    <string name="buscando">Buscando…</string>
+    <string name="lo_estoy_viendo">¡Lo estoy viendo! No te muevas…</string>
+    <plurals name="otro_objeto">
+        <item quantity="one">Pedir otro (queda %d)</item>
+        <item quantity="other">Pedir otro (quedan %d)</item>
+    </plurals>
+    <string name="mejor_calculo">Hacer el cálculo</string>
+    <string name="sonando_pulsa">Suena · toca una tecla para silenciarla</string>
+    <string name="borrar">Borrar</string>
+    <string name="sigues_despierto">¿Sigues despierto?</string>
+    <string name="comprobacion_quedan">Si no respondes en %1$d s, la alarma volverá a sonar.</string>
+    <string name="si_despierto">Sí, estoy despierto</string>
+    <string name="buenos_dias">Buenos días</string>
+    <string name="buenas_tardes">Buenas tardes</string>
+    <string name="buenas_noches">Buenas noches</string>
+    <string name="perfecto">Perfecto</string>
+    <string name="buen_dia">Que tengas un buen día.</string>
+    <string name="te_has_levantado">Te has levantado a las %1$s.</string>
+    <string name="proxima_cuando">Próxima alarma: %1$s.</string>
+    <plurals name="comprobare_en">
+        <item quantity="one">Dentro de %d minuto te preguntaré si sigues despierto.</item>
+        <item quantity="other">Dentro de %d minutos te preguntaré si sigues despierto.</item>
+    </plurals>
+    <string name="cerrar">Cerrar</string>
+
+    <!-- Notificaciones -->
+    <string name="canal_alarmas">Alarmas</string>
+    <string name="canal_alarmas_desc">La alarma mientras suena.</string>
+    <string name="notificacion_alarma">Alarma · %1$s</string>
+    <string name="notificacion_toca">Toca para apagarla.</string>
+    <string name="notificacion_comprobacion">Toca para responder, o volverá a sonar.</string>
+
+    <!-- Permisos -->
+    <string name="permisos_titulo">Para que suene siempre</string>
+    <string name="permisos_texto">Android pide unos permisos para que una alarma funcione bien. Sin ellos, Alba puede llegar tarde o no sonar.</string>
+    <string name="permiso_notificaciones">Notificaciones</string>
+    <string name="permiso_notificaciones_desc">Para enseñar la alarma.</string>
+    <string name="permiso_pantalla">Pantalla completa</string>
+    <string name="permiso_pantalla_desc">Para salir encima de la pantalla de bloqueo.</string>
+    <string name="permiso_exactas">Alarmas exactas</string>
+    <string name="permiso_exactas_desc">Para sonar a su hora, ni un minuto tarde.</string>
+    <string name="permiso_segundo_plano">Actividad en segundo plano</string>
+    <string name="permiso_segundo_plano_desc">Con la batería restringida, Android puede impedir que suene.</string>
+    <string name="permiso_bateria">Sin optimizar la batería</string>
+    <string name="permiso_bateria_desc">Recomendado: algunos móviles cierran las apps optimizadas.</string>
+    <string name="permisos_fabricante">En %1$s, entra también en los ajustes de Alba → Uso de la batería, y permite la actividad en segundo plano y el inicio automático. Sin eso, el sistema puede cerrar Alba y la alarma no sonaría.</string>
+    <string name="abrir_ajustes">Abrir los ajustes de Alba</string>
+    <string name="activar">Activar</string>
+    <string name="concedido">Concedido</string>
+    <string name="listo">Listo</string>
 </resources>

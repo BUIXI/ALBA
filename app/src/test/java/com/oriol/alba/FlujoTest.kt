@@ -40,7 +40,7 @@ class FlujoTest {
   @Before
   fun abrir() {
     baseDatos = BaseDatos.enMemoria(ApplicationProvider.getApplicationContext())
-    val repositorio = RepositorioAlarmas(baseDatos.alarmas())
+    val repositorio = RepositorioAlarmas(baseDatos.alarmas(), ProgramadorFalso())
     composeRule.setContent { TemaAlba { NavegacionAlba(repositorio) } }
   }
 

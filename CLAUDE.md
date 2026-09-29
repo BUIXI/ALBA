@@ -37,6 +37,12 @@ $env:JAVA_TOOL_OPTIONS = "-Djdk.net.unixdomain.tmpdir=$PWD\.gradle\tmp-java"
   se copian a `docs\capturas\faseNN\`.
 - Con el móvil conectado por USB: `.\gradlew.bat installDebug` y
   `& "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" devices`.
+- APK para probar: `.\gradlew.bat assembleRelease` →
+  `app\build\outputs\apk\release\app-release.apk`. Se copia a
+  `entregas\Alba-<versión>.apk` (fuera de Git). Firmado con la clave de depuración
+  del PC: basta para instalar encima de la anterior, no para Play.
+- `lintDebug` sin errores antes de entregar (el *lint* vital de `assembleRelease` es
+  más flojo: no avisa de API que no existen en Android 8).
 - La salida de error de Gradle llega envuelta como `NativeCommandError` en
   PowerShell 5.1: no es un fallo. Mandarla a un archivo con `*> log` y filtrar.
 - Avisos inofensivos: "SDK XML versions up to 3 but an SDK XML file of version 4"
@@ -54,3 +60,6 @@ $env:JAVA_TOOL_OPTIONS = "-Djdk.net.unixdomain.tmpdir=$PWD\.gradle\tmp-java"
   alarma, siempre en claro. Nada de Material por defecto ni colores dinámicos.
 - **Nunca** anuncios entre que suena la alarma y que se completa la tarea.
 - Git local, rama `main`. Para mensajes de commit largos, `git commit -F archivo`.
+- **Nunca editar código con `Get-Content`/`Set-Content` de PowerShell 5.1**: leen
+  en Windows-1252 y rompen las tildes ("Qué" → "QuÃ©"). Usar la herramienta de
+  edición. Si pasa, se deshace releyendo en UTF-8 y codificando en 1252.

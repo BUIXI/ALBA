@@ -1,6 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <!-- Enseñar la alarma (Android 13+ lo pide con un diálogo). -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+    <!-- Alarmas exactas. USE_EXACT_ALARM (Android 13+) se concede solo a las apps de
+         alarma; en Android 12 hace falta SCHEDULE_EXACT_ALARM. -->
+    <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
+    <uses-permission
+        android:name="android.permission.SCHEDULE_EXACT_ALARM"
+        android:maxSdkVersion="32" />
+    <!-- Salir a pantalla completa encima de la pantalla de bloqueo. -->
+    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+    <!-- El servicio que mantiene la alarma sonando. -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <!-- Reprogramar las alarmas al encender el móvil. -->
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <!-- Tarea de foto. Sin cámara la app funciona igual (tarea de cálculo). -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-feature
+        android:name="android.hardware.camera.any"
+        android:required="false" />
+
     <application
         android:name=".AlbaApp"
         android:allowBackup="true"
@@ -11,6 +34,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Alba">
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -20,6 +44,47 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- La pantalla de la alarma: encima del bloqueo, en su propia tarea (al
+             cerrarla se vuelve a donde estabas) y fuera de "Recientes". Funciona antes
+             del primer desbloqueo (directBootAware). -->
+        <activity
+            android:name=".ui.alarma.ActividadAlarma"
+            android:directBootAware="true"
+            android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleInstance"
+            android:screenOrientation="portrait"
+            android:showWhenLocked="true"
+            android:taskAffinity=""
+            android:theme="@style/Theme.Alba.Alarma"
+            android:turnScreenOn="true" />
+
+        <service
+            android:name=".alarma.ServicioAlarma"
+            android:directBootAware="true"
+            android:exported="false"
+            android:foregroundServiceType="mediaPlayback" />
+
+        <receiver
+            android:name=".alarma.ReceptorAlarma"
+            android:directBootAware="true"
+            android:exported="false" />
+
+        <!-- Avisos del sistema: encendido, actualización de la app, cambio de hora... -->
+        <receiver
+            android:name=".alarma.ReceptorSistema"
+            android:directBootAware="true"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <action android:name="android.intent.action.LOCKED_BOOT_COMPLETED" />
+                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+                <action android:name="android.intent.action.TIME_SET" />
+                <action android:name="android.intent.action.TIMEZONE_CHANGED" />
+                <action android:name="android.app.action.SCHEDULE_EXACT_ALARM_PERMISSION_STATE_CHANGED" />
+            </intent-filter>
+        </receiver>
     </application>
 
 </manifest>

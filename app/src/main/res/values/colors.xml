@@ -2,4 +2,7 @@
 <resources>
     <!-- Fondo del icono de la app y de la pantalla de arranque. -->
     <color name="fondo_icono">#FF000000</color>
+    <!-- Fondo de la ventana de la alarma antes de que pinte Compose (el tono del
+         degradado de amanecer). -->
+    <color name="fondo_alarma">#FFFFF1E0</color>
 </resources>

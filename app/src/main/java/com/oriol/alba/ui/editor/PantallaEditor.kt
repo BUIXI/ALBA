@@ -1,5 +1,11 @@
 package com.oriol.alba.ui.editor
 
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,8 +35,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.oriol.alba.R
+import com.oriol.alba.alarma.ServicioAlarma
 import com.oriol.alba.datos.Alarma
+import com.oriol.alba.datos.Sonido
 import com.oriol.alba.datos.TipoTarea
+import com.oriol.alba.ui.componentes.Interruptor
 import com.oriol.alba.theme.Alba
 import com.oriol.alba.ui.componentes.BotonTexto
 import com.oriol.alba.ui.componentes.EncabezadoGrupo
@@ -47,8 +56,16 @@ import java.time.DayOfWeek
 
 /** Crear o editar una alarma. Se abre desde abajo, como una hoja de iOS. */
 @Composable
-fun PantallaEditor(vm: EditorViewModel, onCerrar: () -> Unit) {
+fun PantallaEditor(vm: EditorViewModel, onCerrar: () -> Unit, onProbar: (Alarma) -> Unit) {
   val borrador by vm.borrador.collectAsStateWithLifecycle()
+  val context = LocalContext.current
+  // Al elegir la foto se pide la cámara ya, no a las 7 de la mañana.
+  val pedirCamara = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {}
+  val elegirTarea = { tarea: TipoTarea ->
+    vm.cambiarTarea(tarea)
+    val hayCamara = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+    if (tarea == TipoTarea.FOTO && !hayCamara) pedirCamara.launch(Manifest.permission.CAMERA)
+  }
   val alarma = borrador
   if (alarma == null) {
     // Cargando una alarma existente: un instante, solo el fondo.
@@ -61,10 +78,13 @@ fun PantallaEditor(vm: EditorViewModel, onCerrar: () -> Unit) {
     onHora = vm::cambiarHora,
     onDias = vm::cambiarDias,
     onEtiqueta = vm::cambiarEtiqueta,
-    onTarea = vm::cambiarTarea,
+    onTarea = elegirTarea,
     onCancelar = onCerrar,
     onGuardar = { vm.guardar(onCerrar) },
     onEliminar = { vm.eliminar(onCerrar) },
+    onSonido = vm::cambiarSonido,
+    onComprobar = vm::cambiarComprobar,
+    onProbar = { onProbar(alarma) },
   )
 }
 
@@ -81,6 +101,9 @@ fun EditorAlarma(
   onGuardar: () -> Unit,
   onEliminar: () -> Unit,
   modifier: Modifier = Modifier,
+  onSonido: (Sonido) -> Unit = {},
+  onComprobar: (Boolean) -> Unit = {},
+  onProbar: () -> Unit = {},
 ) {
   Pantalla(modifier) {
     BarraModal(
@@ -116,6 +139,43 @@ fun EditorAlarma(
           FilaTarea(tarea, marcada = alarma.tarea == tarea, onClick = { onTarea(tarea) })
         }
       }
+
+      EncabezadoGrupo(stringResource(R.string.sonido))
+      Grupo {
+        Sonido.entries.forEachIndexed { indice, sonido ->
+          if (indice > 0) SeparadorFila()
+          val (titulo, descripcion) =
+            when (sonido) {
+              Sonido.AMANECER -> R.string.sonido_amanecer to R.string.sonido_amanecer_desc
+              Sonido.SISTEMA -> R.string.sonido_sistema to R.string.sonido_sistema_desc
+            }
+          FilaOpcion(
+            stringResource(titulo),
+            stringResource(descripcion),
+            marcada = alarma.sonido == sonido,
+            onClick = { onSonido(sonido) },
+          )
+        }
+      }
+
+      EncabezadoGrupo(stringResource(R.string.despues_de_apagarla))
+      Grupo {
+        FilaGrupo(stringResource(R.string.comprobar, ServicioAlarma.MinutosComprobacion.toInt())) {
+          Interruptor(alarma.comprobar, onComprobar)
+        }
+      }
+      PieGrupo(stringResource(R.string.comprobar_pie))
+
+      Spacer(Modifier.height(24.dp))
+      Grupo {
+        FilaGrupo(
+          stringResource(R.string.probar_alarma),
+          onClick = onProbar,
+          colorTitulo = Alba.colores.acento,
+          alineacionTitulo = Alignment.CenterHorizontally,
+        )
+      }
+      PieGrupo(stringResource(R.string.probar_pie))
 
       if (!esNueva) {
         Spacer(Modifier.height(32.dp))
@@ -178,7 +238,12 @@ private fun FilaTarea(tarea: TipoTarea, marcada: Boolean, onClick: () -> Unit) {
       TipoTarea.CALCULO -> R.string.tarea_calculo to R.string.tarea_calculo_desc
       TipoTarea.FOTO -> R.string.tarea_foto to R.string.tarea_foto_desc
     }
-  val disponible = tarea.disponible
+  FilaOpcion(stringResource(titulo), stringResource(descripcion), marcada, onClick, disponible = tarea.disponible)
+}
+
+/** Opción con título y explicación; la elegida lleva una marca. Las no disponibles dicen "Pronto". */
+@Composable
+private fun FilaOpcion(titulo: String, descripcion: String, marcada: Boolean, onClick: () -> Unit, disponible: Boolean = true) {
   Row(
     Modifier.fillMaxWidth()
       .selectable(
@@ -194,12 +259,12 @@ private fun FilaTarea(tarea: TipoTarea, marcada: Boolean, onClick: () -> Unit) {
   ) {
     Column(Modifier.weight(1f)) {
       Text(
-        stringResource(titulo),
+        titulo,
         style = Alba.tipos.cuerpo,
         color = if (disponible) Alba.colores.texto else Alba.colores.textoTerciario,
       )
       Text(
-        stringResource(descripcion),
+        descripcion,
         style = Alba.tipos.nota,
         color = if (disponible) Alba.colores.textoSecundario else Alba.colores.textoTerciario,
       )

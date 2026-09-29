@@ -18,10 +18,23 @@ import androidx.compose.ui.test.onRoot
 import androidx.compose.ui.unit.dp
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.github.takahirom.roborazzi.captureRoboImage
+import com.oriol.alba.alarma.EstadoPermisos
 import com.oriol.alba.datos.Alarma
+import com.oriol.alba.dominio.Operacion
+import com.oriol.alba.dominio.Operador
+import com.oriol.alba.theme.PaletaClara
 import com.oriol.alba.theme.TemaAlba
+import com.oriol.alba.ui.alarma.AlarmaCalculo
+import androidx.compose.ui.graphics.Brush
+import com.oriol.alba.dominio.ObjetoFoto
+import com.oriol.alba.ui.alarma.AlarmaComprobacion
+import com.oriol.alba.ui.alarma.AlarmaFoto
+import com.oriol.alba.ui.alarma.AlarmaHecha
+import com.oriol.alba.ui.alarma.AlarmaSonando
+import com.oriol.alba.ui.alarma.Fase
 import com.oriol.alba.ui.editor.EditorAlarma
 import com.oriol.alba.ui.lista.ListaAlarmas
+import com.oriol.alba.ui.permisos.ListaPermisos
 import java.time.DayOfWeek.FRIDAY
 import java.time.DayOfWeek.MONDAY
 import java.time.DayOfWeek.SATURDAY
@@ -30,6 +43,7 @@ import java.time.DayOfWeek.THURSDAY
 import java.time.DayOfWeek.TUESDAY
 import java.time.DayOfWeek.WEDNESDAY
 import java.time.LocalDateTime
+import java.time.LocalTime
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -65,9 +79,11 @@ class CapturasTest {
       Alarma(id = 4, hora = 16, minuto = 45, etiqueta = "Recoger a Marc", activa = false),
     )
 
+  // --- App (oscura) ---
+
   @Test
   fun listaVacia() {
-    composeRule.setContent { TemaAlba { ListaAlarmas(emptyList(), ahora, {}, {}, { _, _ -> }) } }
+    composeRule.setContent { TemaAlba { ListaAlarmas(emptyList(), ahora, {}, {}, { _, _ -> }, avisoPermisos = true) } }
     capturar("lista_vacia")
   }
 
@@ -85,10 +101,73 @@ class CapturasTest {
     capturar("editor_nueva")
   }
 
+  /** El editor entero, en una pantalla muy alta para verlo sin desplazar. */
   @Test
+  @Config(qualifiers = "+h1500dp")
   fun editorEdicion() {
     composeRule.setContent { TemaAlba { EditorAlarma(ejemplo[1], false, { _, _ -> }, {}, {}, {}, {}, {}, {}) } }
     capturar("editor_edicion")
+  }
+
+  @Test
+  fun permisos() {
+    val estado = EstadoPermisos(notificaciones = true, pantallaCompleta = false, alarmasExactas = true, segundoPlano = true, sinOptimizarBateria = false)
+    composeRule.setContent { TemaAlba { ListaPermisos(estado, "Realme", {}, {}, {}, {}, {}, {}, {}) } }
+    capturar("permisos")
+  }
+
+  // --- Alarma (clara) ---
+
+  @Test
+  fun alarmaSonando() {
+    composeRule.setContent {
+      TemaAlba(PaletaClara) { AlarmaSonando(ejemplo[1], LocalDateTime.of(2026, 9, 30, 7, 0), prueba = false, onDespierto = {}) }
+    }
+    capturar("alarma_sonando")
+  }
+
+  @Test
+  fun alarmaCalculo() {
+    composeRule.setContent {
+      TemaAlba(PaletaClara) {
+        AlarmaCalculo(Operacion(47, 38, Operador.SUMA), respuesta = "8", aciertos = 1, total = 3, fallos = 0, segundosSilencio = 24, onTecla = {})
+      }
+    }
+    capturar("alarma_calculo")
+  }
+
+  @Test
+  fun alarmaFoto() {
+    composeRule.setContent {
+      TemaAlba(PaletaClara) {
+        AlarmaFoto(
+          objeto = ObjetoFoto.FREGADERO,
+          vistosSeguidos = 1,
+          segundosSilencio = 18,
+          cambiosRestantes = 2,
+          mostrarCalculo = true,
+          onCambiar = {},
+          onCalculo = {},
+        ) { modifier ->
+          // En el PC no hay cámara: un hueco con un degradado que haga de imagen.
+          Box(modifier.background(Brush.verticalGradient(listOf(Color(0xFF5B6B7A), Color(0xFF2E3A44)))))
+        }
+      }
+    }
+    capturar("alarma_foto")
+  }
+
+  @Test
+  fun alarmaComprobacion() {
+    composeRule.setContent { TemaAlba(PaletaClara) { AlarmaComprobacion(segundos = 42, onSi = {}) } }
+    capturar("alarma_comprobacion")
+  }
+
+  @Test
+  fun alarmaHecha() {
+    val fase = Fase.Hecho(LocalTime.of(7, 3), fueComprobacion = false, comprobaraDespues = true, proxima = LocalDateTime.of(2026, 10, 1, 7, 0))
+    composeRule.setContent { TemaAlba(PaletaClara) { AlarmaHecha(fase, onCerrar = {}) } }
+    capturar("alarma_hecha")
   }
 
   /** El icono de la app con las máscaras más comunes: círculo y "squircle". */

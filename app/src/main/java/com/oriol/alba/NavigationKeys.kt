@@ -11,3 +11,6 @@ import kotlinx.serialization.Serializable
 
 /** Editor de una alarma. [alarmaId] 0 = alarma nueva. */
 @Serializable data class Editor(val alarmaId: Long = 0L) : NavKey
+
+/** "Para que suene siempre": permisos y ajustes de batería. */
+@Serializable data object ClavePermisos : NavKey

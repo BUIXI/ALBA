@@ -26,12 +26,24 @@ android {
         versionCode = 1
         versionName = "0.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        // Solo las arquitecturas de los móviles de hoy. La librería de ML Kit trae
+        // código nativo (unos 10 MB por arquitectura): así el APK pesa mucho menos.
+        ndk { abiFilters += listOf("arm64-v8a", "armeabi-v7a") }
     }
 
     buildTypes {
+        debug {
+            // La de depuración también para el emulador del PC.
+            ndk { abiFilters += "x86_64" }
+        }
         release {
+            // R8 (minificar) reduciría mucho el tamaño, pero puede romper cosas en
+            // tiempo de ejecución: se activará cuando se pueda probar en el móvil.
             isMinifyEnabled = false
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            // APK de pruebas: firmado con la clave de depuración de este PC. Para
+            // publicar en Play hará falta una clave propia (Play rechaza esta).
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -89,6 +101,13 @@ dependencies {
   implementation(libs.androidx.navigation3.ui)
   implementation(libs.androidx.navigation3.runtime)
   implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+
+  // Tarea de foto: CameraX y el reconocedor de objetos de ML Kit, con el modelo dentro
+  // de la app (funciona sin internet y sin coste por uso).
+  implementation(libs.androidx.camera.camera2)
+  implementation(libs.androidx.camera.lifecycle)
+  implementation(libs.androidx.camera.view)
+  implementation(libs.mlkit.etiquetas)
 
   // Base de datos local (Room)
   implementation(libs.androidx.room.runtime)

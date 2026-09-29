@@ -49,20 +49,30 @@ fun Pantalla(modifier: Modifier = Modifier, content: @Composable ColumnScope.() 
   )
 }
 
-/** Botón principal: una píldora de color acento. Uno por pantalla como mucho. */
+/**
+ * Botón principal: una píldora de color acento. Uno por pantalla como mucho. En la
+ * pantalla de la alarma va en negro ([fondo], [colorTexto]).
+ */
 @Composable
-fun BotonPrincipal(texto: String, onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun BotonPrincipal(
+  texto: String,
+  onClick: () -> Unit,
+  modifier: Modifier = Modifier,
+  fondo: Color = Alba.colores.acento,
+  colorTexto: Color = Alba.colores.sobreAcento,
+  alto: Dp = 52.dp,
+) {
   // El clic va antes que el fondo: así el atenuado afecta a todo el botón.
   Box(
     modifier
-      .heightIn(min = 52.dp)
+      .heightIn(min = alto)
       .clip(RoundedCornerShape(percent = 50))
       .clickable(role = Role.Button, onClick = onClick)
-      .background(Alba.colores.acento)
+      .background(fondo)
       .padding(horizontal = 28.dp),
     contentAlignment = Alignment.Center,
   ) {
-    Text(texto, style = Alba.tipos.cabecera, color = Alba.colores.sobreAcento)
+    Text(texto, style = Alba.tipos.cabecera, color = colorTexto)
   }
 }
 

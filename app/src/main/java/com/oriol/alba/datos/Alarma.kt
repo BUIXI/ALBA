@@ -19,6 +19,9 @@ data class Alarma(
   val etiqueta: String = "",
   /** Lo que hay que hacer para apagarla. */
   val tarea: TipoTarea = TipoTarea.CALCULO,
+  val sonido: Sonido = Sonido.AMANECER,
+  /** Si a los 10 minutos de apagarla pregunta "¿Sigues despierto?". */
+  val comprobar: Boolean = true,
 )
 
 // Fuera de la clase para que Room no la tome por una columna.
@@ -35,5 +38,14 @@ enum class TipoTarea(
   val disponible: Boolean
 ) {
   CALCULO(disponible = true),
-  FOTO(disponible = false),
+  FOTO(disponible = true),
+}
+
+/** Sonido de la alarma. Se guarda por su nombre, como [TipoTarea]. */
+enum class Sonido {
+  /** El nuestro: un carillón suave que sube de volumen (res/raw/amanecer.wav). */
+  AMANECER,
+
+  /** El sonido de alarma que tenga elegido el móvil. */
+  SISTEMA,
 }
