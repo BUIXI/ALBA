@@ -19,6 +19,32 @@ mental...) para apagarla. Kotlin + Jetpack Compose. Qué es y qué se ha decidid
   emulador no arranca. Activarlo es cosa de Oriol (cambio de sistema y reinicio).
 - Móvil de pruebas: **Realme 14 Pro+** (Realme UI, Android 15), 1272×2800 px.
 
+## En la nube (Claude Code en la web, Linux)
+
+El repositorio está en GitHub (`BUIXI/ALBA`, privado). En la nube no hay JDK ni SDK
+de Android de serie, ni el Realme conectado. Para compilar y probar:
+
+```bash
+# JDK 17 (si `java -version` no da 17 o más)
+sudo apt-get update && sudo apt-get install -y openjdk-17-jdk-headless unzip
+# SDK de Android con la Android CLI (los paquetes van con "/", no con ";")
+export ANDROID_HOME="$HOME/android-sdk"
+mkdir -p "$ANDROID_HOME/cmdline-tools"
+curl -sSLo /tmp/ct.zip https://dl.google.com/android/repository/commandlinetools-linux-16111833_latest.zip
+unzip -q /tmp/ct.zip -d "$ANDROID_HOME/cmdline-tools" && mv "$ANDROID_HOME/cmdline-tools/cmdline-tools" "$ANDROID_HOME/cmdline-tools/latest"
+"$ANDROID_HOME/cmdline-tools/latest/bin/android" --no-metrics sdk install platforms/android-36 build-tools/36.1.0 platform-tools
+echo "sdk.dir=$ANDROID_HOME" > local.properties
+./gradlew assembleDebug testDebugUnitTest --console=plain
+```
+
+- Robolectric descarga su Android de Maven Central la primera vez: hace falta red.
+- El truco de `JAVA_TOOL_OPTIONS` de abajo es solo para la consola de Claude en
+  Windows; en Linux no hace falta.
+- Los APK de prueba (`assembleRelease`) se firman con la clave de depuración **de
+  cada máquina**: uno hecho en la nube no se instala encima de uno hecho en el PC
+  (habría que desinstalar, y se perderían las alarmas). Para Oriol, mejor sacar
+  los APK desde el PC hasta que haya una clave propia.
+
 ## Compilar y verificar (PowerShell)
 
 ```powershell
