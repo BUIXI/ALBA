@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Alba</string>
+    <string name="titulo_alarmas">Alarmas</string>
+    <string name="sin_alarmas">Sin alarmas</string>
+</resources>

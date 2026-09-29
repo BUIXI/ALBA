@@ -1,0 +1,25 @@
+# Gradle y compilación
+.gradle/
+.kotlin/
+build/
+/captures/
+*.apk
+*.aab
+
+# Rutas locales del SDK (cada PC tiene la suya)
+local.properties
+
+# Android Studio / IntelliJ
+.idea/
+*.iml
+.cxx/
+.externalNativeBuild/
+
+# Claves de firma: nunca en el repo
+*.jks
+*.keystore
+keystore.properties
+
+# Sistema
+.DS_Store
+Thumbs.db

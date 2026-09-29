@@ -1,0 +1,6 @@
+# gradlew se ejecuta en Linux/macOS: siempre con LF. Los .bat, con CRLF.
+gradlew text eol=lf
+*.bat text eol=crlf
+*.png binary
+*.webp binary
+*.jar binary
