@@ -9,9 +9,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.Modifier
-import com.oriol.alba.theme.AlbaTheme
+import com.oriol.alba.theme.Alba
+import com.oriol.alba.theme.TemaAlba
 
 class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -23,9 +23,11 @@ class MainActivity : ComponentActivity() {
       statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
       navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
     )
+    val repositorio = (application as AlbaApp).contenedor.repositorio
     setContent {
-      AlbaTheme {
-        Box(Modifier.fillMaxSize().background(MaterialTheme.colorScheme.background)) { MainNavigation() }
+      TemaAlba {
+        // Fondo también por debajo de las pantallas, para las transiciones.
+        Box(Modifier.fillMaxSize().background(Alba.colores.fondo)) { NavegacionAlba(repositorio) }
       }
     }
   }

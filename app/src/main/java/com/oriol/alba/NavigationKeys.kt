@@ -7,4 +7,7 @@ import kotlinx.serialization.Serializable
 // sobreviva a que Android cierre el proceso.
 
 /** Pantalla principal: la lista de alarmas. */
-@Serializable data object Main : NavKey
+@Serializable data object Lista : NavKey
+
+/** Editor de una alarma. [alarmaId] 0 = alarma nueva. */
+@Serializable data class Editor(val alarmaId: Long = 0L) : NavKey

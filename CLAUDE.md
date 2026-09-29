@@ -32,8 +32,11 @@ $env:JAVA_TOOL_OPTIONS = "-Djdk.net.unixdomain.tmpdir=$PWD\.gradle\tmp-java"
 ```
 
 - Resultados de las pruebas: `app\build\test-results\testDebugUnitTest\*.xml`.
-- Capturas: `app\build\outputs\roborazzi\*.png`, al tamaño del Realme. Se dibujan
-  en el PC con Robolectric; no hace falta emulador.
+- Capturas: `app\build\outputs\roborazzi\*.png`, al tamaño del Realme y en español.
+  Se dibujan en el PC con Robolectric; no hace falta emulador. Al cerrar una fase,
+  se copian a `docs\capturas\faseNN\`.
+- Con el móvil conectado por USB: `.\gradlew.bat installDebug` y
+  `& "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" devices`.
 - La salida de error de Gradle llega envuelta como `NativeCommandError` en
   PowerShell 5.1: no es un fallo. Mandarla a un archivo con `*> log` y filtrar.
 - Avisos inofensivos: "SDK XML versions up to 3 but an SDK XML file of version 4"

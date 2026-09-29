@@ -3,6 +3,14 @@ plugins {
   alias(libs.plugins.compose.compiler)
   alias(libs.plugins.kotlin.serialization)
   alias(libs.plugins.roborazzi)
+  alias(libs.plugins.ksp)
+  alias(libs.plugins.room)
+}
+
+// Room guarda aquí el esquema de cada versión de la base de datos. Va a Git:
+// hace falta para escribir y probar las migraciones cuando cambie.
+room {
+    schemaDirectory("$projectDir/schemas")
 }
 
 android {
@@ -81,6 +89,12 @@ dependencies {
   implementation(libs.androidx.navigation3.ui)
   implementation(libs.androidx.navigation3.runtime)
   implementation(libs.androidx.lifecycle.viewmodel.navigation3)
+
+  // Base de datos local (Room)
+  implementation(libs.androidx.room.runtime)
+  implementation(libs.androidx.room.ktx)
+  ksp(libs.androidx.room.compiler)
+  testImplementation(libs.androidx.room.testing)
 
   // Pruebas locales en el PC: JUnit, corrutinas, Robolectric y capturas
   testImplementation(libs.junit)

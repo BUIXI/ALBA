@@ -7,20 +7,29 @@ Punto de entrada. Producto y decisiones: [`PRODUCTO.md`](PRODUCTO.md).
 | Fase | Estado | Documento |
 |---|---|---|
 | 0 — Entorno y proyecto base | Cerrada | [`fases/fase00-entorno.md`](fases/fase00-entorno.md) |
-| 1 — Sistema de diseño y lista de alarmas | Pendiente | |
+| 1 — Sistema de diseño y lista de alarmas | Cerrada (falta probarla en el Realme) | [`fases/fase01-diseno-y-lista.md`](fases/fase01-diseno-y-lista.md) |
 | 2 — Alarma fiable | Pendiente | |
 | 3 — Cálculo mental y tareas intercambiables | Pendiente | |
 | 4 — Foto ancla con ML Kit | Pendiente | |
 | 5 — Segunda comprobación, reintento y pulido | Pendiente | |
 | 6 — Premium, IA con *backend* y anuncios | Pendiente | |
 
+## Mapa del código (`app/src/main/java/com/oriol/alba/`)
+
+| Carpeta | Qué hay |
+|---|---|
+| `theme/` | Paletas, tipografía (Inter) y `TemaAlba` |
+| `ui/componentes/` | Piezas del sistema de diseño: rueda, interruptor, grupos, botones, pulsación |
+| `ui/lista/`, `ui/editor/` | Pantallas con su ViewModel. Cada una tiene una versión sin estado para las capturas |
+| `datos/` | Room: `Alarma`, DAO, base de datos, `RepositorioAlarmas` |
+| `dominio/` | Lógica pura: cuándo suena cada alarma, días de la semana |
+| `AlbaApp.kt`, `Navigation*.kt` | Contenedor de dependencias y navegación (Navigation 3) |
+
 ## Pruebas
 
-| Prueba | Qué comprueba |
-|---|---|
-| `ui/main/MainScreenTest` (local) | La pantalla principal muestra el título y el estado vacío |
-| `CapturasTest` (local) | Captura `principal_vacia.png` |
-| `ui/main/MainScreenTest` (instrumentada) | Lo mismo en el móvil |
+27 pruebas locales, todas en el PC: `gradlew testDebugUnitTest`. Detalle en el
+documento de la fase 1. Capturas: `gradlew recordRoborazziDebug`, copiadas a
+`docs/capturas/faseNN/` al cerrar cada fase.
 
 ## Preparar el PC y el móvil (lo hace Oriol)
 

@@ -1,5 +1,41 @@
 <resources>
     <string name="app_name">Alba</string>
+
+    <!-- Lista -->
     <string name="titulo_alarmas">Alarmas</string>
+    <string name="nueva_alarma">Nueva alarma</string>
     <string name="sin_alarmas">Sin alarmas</string>
+    <string name="sin_alarmas_texto">Crea una y Alba se asegurará de que te levantes.</string>
+    <string name="crear_alarma">Crear alarma</string>
+    <string name="proxima_en_min">Próxima alarma en %1$d min</string>
+    <string name="proxima_en_h">Próxima alarma en %1$d h</string>
+    <string name="proxima_en_h_min">Próxima alarma en %1$d h %2$d min</string>
+    <string name="proxima_el_dia">Próxima alarma el %1$s</string>
+    <string name="ninguna_activa">Ninguna alarma activada</string>
+    <string name="alarma_de_las">Alarma de las %1$s</string>
+
+    <!-- Días -->
+    <string name="una_vez">Una vez</string>
+    <string name="todos_los_dias">Todos los días</string>
+    <string name="entre_semana">Entre semana</string>
+    <string name="fin_de_semana">Fin de semana</string>
+    <string name="separador_detalle">" · "</string>
+
+    <!-- Editor -->
+    <string name="editar_alarma">Editar alarma</string>
+    <string name="cancelar">Cancelar</string>
+    <string name="guardar">Guardar</string>
+    <string name="hora">Hora</string>
+    <string name="minutos">Minutos</string>
+    <string name="repetir">Repetir</string>
+    <string name="sonara_una_vez">Sin días marcados, sonará una sola vez.</string>
+    <string name="etiqueta">Etiqueta</string>
+    <string name="etiqueta_por_defecto">Alarma</string>
+    <string name="para_apagarla">Para apagarla</string>
+    <string name="tarea_calculo">Cálculo mental</string>
+    <string name="tarea_calculo_desc">Resuelve unas operaciones sencillas.</string>
+    <string name="tarea_foto">Foto de un objeto</string>
+    <string name="tarea_foto_desc">Levántate y hazle una foto a algo de tu casa.</string>
+    <string name="pronto">Pronto</string>
+    <string name="eliminar_alarma">Eliminar alarma</string>
 </resources>

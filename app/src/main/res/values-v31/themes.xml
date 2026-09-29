@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- Android 12+: la pantalla de arranque del sistema, también en negro con el
+         icono de la app, para que no haya salto de color al abrir. -->
+    <style name="Theme.Alba" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowSplashScreenBackground">@color/fondo_icono</item>
+    </style>
+</resources>
