@@ -40,8 +40,22 @@
     <string name="etiqueta">Label</string>
     <string name="etiqueta_por_defecto">Alarm</string>
     <string name="para_apagarla">To turn it off</string>
+    <string name="tarea_soles">Catch the suns</string>
+    <string name="tarea_soles_desc">Tap 12 suns before they slip away.</string>
+    <string name="tarea_secuencia">Repeat the sequence</string>
+    <string name="tarea_secuencia_desc">Watch the colors light up, then repeat them.</string>
+    <string name="tarea_parejas">Pairs</string>
+    <string name="tarea_parejas_desc">Flip the cards and find the 6 pairs.</string>
+    <string name="tarea_orden">1 to 12</string>
+    <string name="tarea_orden_desc">Tap the numbers in order, as fast as you can.</string>
     <string name="tarea_calculo">Mental math</string>
     <string name="tarea_calculo_desc">Solve three simple problems.</string>
+    <string name="tareas_marca_varias">Pick several and you\'ll get a random one each time.</string>
+    <plurals name="tareas_al_azar">
+        <item quantity="one">Each time it rings, you\'ll get this one.</item>
+        <item quantity="other">Each time it rings, you\'ll get one of these %d at random.</item>
+    </plurals>
+    <string name="tareas_con_premium">With Premium, pick several and you\'ll get a random one each time.</string>
     <string name="tarea_foto">Photo of an object</string>
     <string name="tarea_foto_desc">Get up and show the camera something in your home: the sink, a cup, the couch…</string>
     <string name="pronto">Soon</string>
@@ -65,6 +79,19 @@
         <item quantity="other">Next, you\'ll solve %d problems.</item>
     </plurals>
     <string name="pista_foto">Next, you\'ll show the camera something in your home.</string>
+    <string name="pista_soles">Next, you\'ll catch 12 suns.</string>
+    <string name="pista_secuencia">Next, you\'ll repeat a sequence of colors.</string>
+    <string name="pista_parejas">Next, you\'ll find 6 pairs of cards.</string>
+    <string name="pista_orden">Next, you\'ll tap 1 to 12 in order.</string>
+    <string name="sonando_juego">Ringing · play to silence it</string>
+    <string name="progreso_de">%1$d of %2$d</string>
+    <string name="secuencia_mira">Watch closely…</string>
+    <string name="secuencia_tu_turno">Your turn: repeat it</string>
+    <string name="ronda_de">Round %1$d of %2$d</string>
+    <string name="parejas_instruccion">Find the pairs</string>
+    <string name="parejas_de">%1$d of %2$d pairs</string>
+    <string name="orden_instruccion">From 1 to %1$d, in order</string>
+    <string name="toca_el">Tap %1$d</string>
     <string name="silencio_quedan">Silence · rings again in %1$d s</string>
     <string name="sonando_foto">Ringing · find the object to turn it off</string>
     <string name="ensenale">Show the camera</string>
@@ -82,7 +109,7 @@
         <item quantity="one">Ask for another (%d left)</item>
         <item quantity="other">Ask for another (%d left)</item>
     </plurals>
-    <string name="mejor_calculo">Do the math instead</string>
+    <string name="otra_actividad">Switch activity</string>
     <string name="sonando_pulsa">Ringing · tap a key to silence it</string>
     <string name="borrar">Delete</string>
     <string name="sigues_despierto">Still awake?</string>

@@ -23,8 +23,8 @@ android {
         // notificación, que la alarma necesita.
         minSdk = 26
         targetSdk = 36
-        versionCode = 2
-        versionName = "0.1.1"
+        versionCode = 3
+        versionName = "0.2"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         // Solo las arquitecturas de los móviles de hoy. La librería de ML Kit trae
         // código nativo (unos 10 MB por arquitectura): así el APK pesa mucho menos.

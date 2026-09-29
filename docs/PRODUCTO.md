@@ -29,7 +29,13 @@ Se publicará en Google Play y se monetizará (ver más abajo).
     referencia por similitud de *embeddings*, en local. Obliga a levantarse y
     andar. Solo cámara, nunca galería. **Pendiente** (necesita un modelo de
     *embeddings* y calibrarlo con fotos reales).
-  - *Cálculo mental, pasos, sacudir, QR*: sin IA. Son el respaldo sin conexión.
+  - *Minijuegos* (0.2): Atrapa los soles, Repite la secuencia, Parejas y Del 1 al 12.
+    Sencillos y sin cuentas: a Oriol el cálculo recién despierto le parece que
+    pone de mal humor. Atrapa los soles es la actividad por defecto.
+  - *Cálculo mental, pasos, sacudir, QR*: sin IA. El cálculo se queda como una
+    opción más, a elección de cada cual.
+  - **Premium**: varias actividades por alarma, y cada vez toca una al azar. El
+    catálogo irá creciendo con cada versión.
   - *Voz*: reconocimiento de voz de Android, que funciona sin conexión (leer una
     frase en voz alta).
 - **Segunda comprobación** a los ~10 minutos ("¿sigues despierto?") para no volver

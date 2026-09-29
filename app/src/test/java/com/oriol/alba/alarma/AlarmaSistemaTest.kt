@@ -118,7 +118,7 @@ class AlarmaSistemaTest {
 
   @Test
   fun servicio_alTerminarConComprobacion_programaLaPregunta() {
-    val conComprobacion = alarma.copy(comprobar = true, tarea = TipoTarea.CALCULO)
+    val conComprobacion = alarma.copy(comprobar = true, tareas = setOf(TipoTarea.CALCULO))
     val controlador = Robolectric.buildService(ServicioAlarma::class.java).create()
     val servicio = controlador.get()
     servicio.onStartCommand(ServicioAlarma.intentSonar(app, conComprobacion, Modo.ALARMA), 0, 1)

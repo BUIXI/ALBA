@@ -38,8 +38,22 @@
     <string name="etiqueta">Etiqueta</string>
     <string name="etiqueta_por_defecto">Alarma</string>
     <string name="para_apagarla">Para apagarla</string>
+    <string name="tarea_soles">Atrapa los soles</string>
+    <string name="tarea_soles_desc">Toca 12 soles antes de que se escapen.</string>
+    <string name="tarea_secuencia">Repite la secuencia</string>
+    <string name="tarea_secuencia_desc">Mira cómo se encienden los colores y repítelo.</string>
+    <string name="tarea_parejas">Parejas</string>
+    <string name="tarea_parejas_desc">Da la vuelta a las cartas y encuentra las 6 parejas.</string>
+    <string name="tarea_orden">Del 1 al 12</string>
+    <string name="tarea_orden_desc">Toca los números en orden, lo más rápido que puedas.</string>
     <string name="tarea_calculo">Cálculo mental</string>
     <string name="tarea_calculo_desc">Resuelve tres operaciones sencillas.</string>
+    <string name="tareas_marca_varias">Marca varias y cada vez te tocará una al azar.</string>
+    <plurals name="tareas_al_azar">
+        <item quantity="one">Cada vez que suene te tocará esta.</item>
+        <item quantity="other">Cada vez que suene te tocará una de estas %d al azar.</item>
+    </plurals>
+    <string name="tareas_con_premium">Con Premium puedes marcar varias y cada vez te tocará una al azar.</string>
     <string name="tarea_foto">Foto de un objeto</string>
     <string name="tarea_foto_desc">Levántate y enséñale a la cámara algo de tu casa: el fregadero, una taza, el sofá…</string>
     <string name="pronto">Pronto</string>
@@ -63,6 +77,19 @@
         <item quantity="other">Después tendrás que resolver %d operaciones.</item>
     </plurals>
     <string name="pista_foto">Después tendrás que enseñarle a la cámara algo de tu casa.</string>
+    <string name="pista_soles">Después tendrás que atrapar 12 soles.</string>
+    <string name="pista_secuencia">Después tendrás que repetir una secuencia de colores.</string>
+    <string name="pista_parejas">Después tendrás que encontrar 6 parejas de cartas.</string>
+    <string name="pista_orden">Después tendrás que tocar del 1 al 12 en orden.</string>
+    <string name="sonando_juego">Suena · juega para silenciarla</string>
+    <string name="progreso_de">%1$d de %2$d</string>
+    <string name="secuencia_mira">Mira bien…</string>
+    <string name="secuencia_tu_turno">Tu turno: repítela</string>
+    <string name="ronda_de">Ronda %1$d de %2$d</string>
+    <string name="parejas_instruccion">Encuentra las parejas</string>
+    <string name="parejas_de">%1$d de %2$d parejas</string>
+    <string name="orden_instruccion">Del 1 al %1$d, en orden</string>
+    <string name="toca_el">Toca el %1$d</string>
     <string name="silencio_quedan">Silencio · vuelve a sonar en %1$d s</string>
     <string name="sonando_foto">Suena · encuentra el objeto para apagarla</string>
     <string name="ensenale">Enséñale a la cámara</string>
@@ -80,7 +107,7 @@
         <item quantity="one">Pedir otro (queda %d)</item>
         <item quantity="other">Pedir otro (quedan %d)</item>
     </plurals>
-    <string name="mejor_calculo">Hacer el cálculo</string>
+    <string name="otra_actividad">Cambiar de actividad</string>
     <string name="sonando_pulsa">Suena · toca una tecla para silenciarla</string>
     <string name="borrar">Borrar</string>
     <string name="sigues_despierto">¿Sigues despierto?</string>

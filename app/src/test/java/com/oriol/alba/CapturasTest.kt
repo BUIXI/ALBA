@@ -28,6 +28,15 @@ import com.oriol.alba.ui.alarma.AlarmaCalculo
 import androidx.compose.ui.graphics.Brush
 import com.oriol.alba.dominio.ObjetoFoto
 import com.oriol.alba.ui.alarma.AlarmaComprobacion
+import com.oriol.alba.ui.alarma.AlarmaOrden
+import com.oriol.alba.ui.alarma.AlarmaParejas
+import com.oriol.alba.ui.alarma.AlarmaSecuencia
+import com.oriol.alba.ui.alarma.AlarmaSoles
+import com.oriol.alba.ui.tareas.EstadoOrden
+import com.oriol.alba.ui.tareas.EstadoParejas
+import com.oriol.alba.ui.tareas.EstadoSecuencia
+import com.oriol.alba.ui.tareas.EstadoSoles
+import kotlin.random.Random
 import com.oriol.alba.ui.alarma.AlarmaFoto
 import com.oriol.alba.ui.alarma.AlarmaHecha
 import com.oriol.alba.ui.alarma.AlarmaSonando
@@ -155,6 +164,48 @@ class CapturasTest {
       }
     }
     capturar("alarma_foto")
+  }
+
+  // --- Minijuegos (a medias, para ver todos sus estados) ---
+
+  @Test
+  fun juegoSoles() {
+    val estado = EstadoSoles(Random(3)).apply { repeat(5) { atrapar() } }
+    composeRule.setContent { TemaAlba(PaletaClara) { AlarmaSoles(estado, segundosSilencio = 26, onAtrapar = {}, onEscapar = {}) } }
+    capturar("juego_soles")
+  }
+
+  @Test
+  fun juegoSecuencia() {
+    val estado = EstadoSecuencia(Random(4)).apply {
+      terminarDeMostrar()
+      pulsar(secuencia[0])
+      pulsar(secuencia[1])
+    }
+    composeRule.setContent { TemaAlba(PaletaClara) { AlarmaSecuencia(estado, segundosSilencio = 22, onPulsar = { null }, onMostrada = {}) } }
+    capturar("juego_secuencia")
+  }
+
+  @Test
+  fun juegoParejas() {
+    val estado = EstadoParejas(Random(5)).apply {
+      // Dos parejas encontradas y una carta destapada.
+      for (simbolo in 0..1) {
+        val (a, b) = cartas.indices.filter { cartas[it] == simbolo }
+        tocar(a)
+        tocar(b)
+      }
+      tocar(cartas.indexOfFirst { it == 4 })
+    }
+    composeRule.setContent { TemaAlba(PaletaClara) { AlarmaParejas(estado, segundosSilencio = 19, onTocar = { null }, onOcultar = {}) } }
+    capturar("juego_parejas")
+  }
+
+  @Test
+  fun juegoOrden() {
+    val estado = EstadoOrden(Random(6)).apply { (1..4).forEach { tocar(it) } }
+    composeRule.setContent { TemaAlba(PaletaClara) { AlarmaOrden(estado, segundosSilencio = 27, onTocar = { null }) } }
+    capturar("juego_orden")
   }
 
   @Test

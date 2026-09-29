@@ -4,7 +4,6 @@ import android.content.Intent
 import com.oriol.alba.datos.Alarma
 import com.oriol.alba.datos.Convertidores
 import com.oriol.alba.datos.Sonido
-import com.oriol.alba.datos.TipoTarea
 
 /** Para qué suena: la alarma de verdad o la pregunta de después. */
 enum class Modo {
@@ -22,7 +21,7 @@ private const val HORA = "alba.hora"
 private const val MINUTO = "alba.minuto"
 private const val DIAS = "alba.dias"
 private const val ETIQUETA = "alba.etiqueta"
-private const val TAREA = "alba.tarea"
+private const val TAREAS = "alba.tareas"
 private const val SONIDO = "alba.sonido"
 private const val COMPROBAR = "alba.comprobar"
 private const val MODO = "alba.modo"
@@ -36,7 +35,7 @@ fun Intent.ponerAlarma(alarma: Alarma): Intent =
     .putExtra(MINUTO, alarma.minuto)
     .putExtra(DIAS, convertidores.diasAMascara(alarma.dias))
     .putExtra(ETIQUETA, alarma.etiqueta)
-    .putExtra(TAREA, alarma.tarea.name)
+    .putExtra(TAREAS, convertidores.tareasATexto(alarma.tareas))
     .putExtra(SONIDO, alarma.sonido.name)
     .putExtra(COMPROBAR, alarma.comprobar)
 
@@ -49,7 +48,7 @@ fun Intent.leerAlarma(): Alarma? {
     minuto = getIntExtra(MINUTO, 0).coerceIn(0, 59),
     dias = convertidores.mascaraADias(getIntExtra(DIAS, 0)),
     etiqueta = getStringExtra(ETIQUETA).orEmpty(),
-    tarea = TipoTarea.entries.firstOrNull { it.name == getStringExtra(TAREA) } ?: TipoTarea.CALCULO,
+    tareas = convertidores.textoATareas(getStringExtra(TAREAS).orEmpty()),
     sonido = Sonido.entries.firstOrNull { it.name == getStringExtra(SONIDO) } ?: Sonido.AMANECER,
     comprobar = getBooleanExtra(COMPROBAR, true),
   )

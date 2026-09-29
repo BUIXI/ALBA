@@ -39,6 +39,8 @@ import com.oriol.alba.alarma.ServicioAlarma
 import com.oriol.alba.datos.Alarma
 import com.oriol.alba.datos.Sonido
 import com.oriol.alba.datos.TipoTarea
+import com.oriol.alba.premium.Premium
+import androidx.compose.ui.res.pluralStringResource
 import com.oriol.alba.ui.componentes.Interruptor
 import com.oriol.alba.theme.Alba
 import com.oriol.alba.ui.componentes.BotonTexto
@@ -61,12 +63,15 @@ fun PantallaEditor(vm: EditorViewModel, onCerrar: () -> Unit, onProbar: (Alarma)
   val context = LocalContext.current
   // Al elegir la foto se pide la cámara ya, no a las 7 de la mañana.
   val pedirCamara = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {}
-  val elegirTarea = { tarea: TipoTarea ->
-    vm.cambiarTarea(tarea)
-    val hayCamara = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
-    if (tarea == TipoTarea.FOTO && !hayCamara) pedirCamara.launch(Manifest.permission.CAMERA)
-  }
+  // Con Premium se pueden marcar varias actividades (una al azar cada vez).
+  val premium by Premium.activo.collectAsStateWithLifecycle()
   val alarma = borrador
+  val elegirTarea = { tarea: TipoTarea ->
+    val yaEstaba = alarma?.tareas?.contains(tarea) == true
+    vm.alternarTarea(tarea, varias = premium)
+    val hayCamara = ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
+    if (tarea.usaCamara && !yaEstaba && !hayCamara) pedirCamara.launch(Manifest.permission.CAMERA)
+  }
   if (alarma == null) {
     // Cargando una alarma existente: un instante, solo el fondo.
     Pantalla {}
@@ -85,6 +90,7 @@ fun PantallaEditor(vm: EditorViewModel, onCerrar: () -> Unit, onProbar: (Alarma)
     onSonido = vm::cambiarSonido,
     onComprobar = vm::cambiarComprobar,
     onProbar = { onProbar(alarma) },
+    variasTareas = premium,
   )
 }
 
@@ -104,6 +110,7 @@ fun EditorAlarma(
   onSonido: (Sonido) -> Unit = {},
   onComprobar: (Boolean) -> Unit = {},
   onProbar: () -> Unit = {},
+  variasTareas: Boolean = true,
 ) {
   Pantalla(modifier) {
     BarraModal(
@@ -136,9 +143,17 @@ fun EditorAlarma(
       Grupo {
         TipoTarea.entries.forEachIndexed { indice, tarea ->
           if (indice > 0) SeparadorFila()
-          FilaTarea(tarea, marcada = alarma.tarea == tarea, onClick = { onTarea(tarea) })
+          FilaTarea(tarea, marcada = tarea in alarma.tareas, onClick = { onTarea(tarea) })
         }
       }
+      val marcadas = alarma.tareas.size
+      PieGrupo(
+        when {
+          !variasTareas -> stringResource(R.string.tareas_con_premium)
+          marcadas > 1 -> pluralStringResource(R.plurals.tareas_al_azar, marcadas, marcadas)
+          else -> stringResource(R.string.tareas_marca_varias)
+        }
+      )
 
       EncabezadoGrupo(stringResource(R.string.sonido))
       Grupo {
@@ -235,8 +250,12 @@ private fun CampoEtiqueta(texto: String, onCambio: (String) -> Unit, modifier: M
 private fun FilaTarea(tarea: TipoTarea, marcada: Boolean, onClick: () -> Unit) {
   val (titulo, descripcion) =
     when (tarea) {
-      TipoTarea.CALCULO -> R.string.tarea_calculo to R.string.tarea_calculo_desc
+      TipoTarea.SOLES -> R.string.tarea_soles to R.string.tarea_soles_desc
+      TipoTarea.SECUENCIA -> R.string.tarea_secuencia to R.string.tarea_secuencia_desc
+      TipoTarea.PAREJAS -> R.string.tarea_parejas to R.string.tarea_parejas_desc
+      TipoTarea.ORDEN -> R.string.tarea_orden to R.string.tarea_orden_desc
       TipoTarea.FOTO -> R.string.tarea_foto to R.string.tarea_foto_desc
+      TipoTarea.CALCULO -> R.string.tarea_calculo to R.string.tarea_calculo_desc
     }
   FilaOpcion(stringResource(titulo), stringResource(descripcion), marcada, onClick, disponible = tarea.disponible)
 }

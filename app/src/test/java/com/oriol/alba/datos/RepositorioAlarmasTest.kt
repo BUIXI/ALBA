@@ -52,7 +52,7 @@ class RepositorioAlarmasTest {
     assertEquals(45, guardada.minuto)
     assertEquals(setOf(MONDAY, SUNDAY), guardada.dias)
     assertEquals("Gimnasio", guardada.etiqueta)
-    assertEquals(TipoTarea.CALCULO, guardada.tarea)
+    assertEquals(setOf(TipoTarea.PorDefecto), guardada.tareas)
     assertEquals(Sonido.SISTEMA, guardada.sonido)
     assertFalse(guardada.comprobar)
   }

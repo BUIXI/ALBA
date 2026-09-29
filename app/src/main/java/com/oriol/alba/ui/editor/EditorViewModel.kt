@@ -39,8 +39,22 @@ class EditorViewModel(private val repositorio: RepositorioAlarmas, private val a
 
   fun cambiarEtiqueta(texto: String) = editar { it.copy(etiqueta = texto.take(LargoMaximoEtiqueta)) }
 
-  fun cambiarTarea(tarea: TipoTarea) {
-    if (tarea.disponible) editar { it.copy(tarea = tarea) }
+  /**
+   * Toca una actividad. Con [varias] (Premium) se marcan y desmarcan varias, y la
+   * alarma elegirá una al azar cada vez; nunca se quedan todas sin marcar. Sin
+   * Premium, la tocada sustituye a la que hubiera.
+   */
+  fun alternarTarea(tarea: TipoTarea, varias: Boolean) {
+    if (!tarea.disponible) return
+    editar { alarma ->
+      val nuevas =
+        when {
+          !varias -> setOf(tarea)
+          tarea in alarma.tareas -> (alarma.tareas - tarea).ifEmpty { alarma.tareas }
+          else -> alarma.tareas + tarea
+        }
+      alarma.copy(tareas = nuevas)
+    }
   }
 
   fun cambiarSonido(sonido: Sonido) = editar { it.copy(sonido = sonido) }

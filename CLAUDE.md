@@ -63,6 +63,10 @@ $env:JAVA_TOOL_OPTIONS = "-Djdk.net.unixdomain.tmpdir=$PWD\.gradle\tmp-java"
 - Estilo: minimalista tipo Apple. La app, siempre en oscuro; la pantalla de la
   alarma, siempre en claro. Nada de Material por defecto ni colores dinámicos.
 - **Nunca** anuncios entre que suena la alarma y que se completa la tarea.
+- **Actividades nuevas**: seguir la guía de
+  `docs/fases/version02-minijuegos.md` ("Cómo añadir una actividad").
+- **Base de datos**: la app ya está instalada en el móvil de Oriol. Todo cambio de
+  esquema necesita subir la versión, una migración y su prueba (`MigracionTest`).
 - Git local, rama `main`. Para mensajes de commit largos, `git commit -F archivo`.
 - **Nunca editar código con `Get-Content`/`Set-Content` de PowerShell 5.1**: leen
   en Windows-1252 y rompen las tildes ("Qué" → "QuÃ©"). Usar la herramienta de

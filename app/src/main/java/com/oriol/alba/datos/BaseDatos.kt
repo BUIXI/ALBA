@@ -1,7 +1,10 @@
 package com.oriol.alba.datos
 
 import android.content.Context
+import androidx.room.AutoMigration
 import androidx.room.Dao
+import androidx.room.RenameColumn
+import androidx.room.migration.AutoMigrationSpec
 import androidx.room.Database
 import androidx.room.Query
 import androidx.room.Room
@@ -38,12 +41,40 @@ class Convertidores {
   fun mascaraADias(mascara: Int): Set<DayOfWeek> = DayOfWeek.entries.filterTo(mutableSetOf()) { mascara and bit(it) != 0 }
 
   private fun bit(dia: DayOfWeek) = 1 shl (dia.value - 1)
+
+  /**
+   * Las actividades, por nombre y separadas por comas ("SOLES,PAREJAS"). Una sola es
+   * igual que como se guardaba en la versión 1 ("CALCULO"): por eso la migración solo
+   * renombra la columna. Los nombres desconocidos se ignoran.
+   */
+  @TypeConverter fun tareasATexto(tareas: Set<TipoTarea>): String = tareas.joinToString(",") { it.name }
+
+  @TypeConverter
+  fun textoATareas(texto: String): Set<TipoTarea> =
+    texto
+      .split(",")
+      .mapNotNull { nombre -> TipoTarea.entries.firstOrNull { it.name == nombre.trim() } }
+      .toSet()
+      .ifEmpty { setOf(TipoTarea.PorDefecto) }
 }
 
-@Database(entities = [Alarma::class], version = 1)
+/**
+ * Versiones de la base de datos:
+ * 1. Primera (0.1): una sola actividad por alarma, en la columna `tarea`.
+ * 2. Varias actividades (0.2): la columna pasa a llamarse `tareas`. Migración
+ *    automática, sin tocar los datos.
+ */
+@Database(
+  entities = [Alarma::class],
+  version = 2,
+  autoMigrations = [AutoMigration(from = 1, to = 2, spec = BaseDatos.De1a2::class)],
+)
 @TypeConverters(Convertidores::class)
 abstract class BaseDatos : RoomDatabase() {
   abstract fun alarmas(): AlarmaDao
+
+  @RenameColumn(tableName = "alarmas", fromColumnName = "tarea", toColumnName = "tareas")
+  class De1a2 : AutoMigrationSpec
 
   companion object {
     /**

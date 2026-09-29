@@ -42,7 +42,8 @@ class AlarmaViewModelTest {
   }
 
   private val ahora = LocalDateTime.of(2026, 9, 30, 7, 3)
-  private val alarma = Alarma(id = 1, hora = 7, minuto = 0, dias = setOf(java.time.DayOfWeek.THURSDAY))
+  private val alarma =
+    Alarma(id = 1, hora = 7, minuto = 0, dias = setOf(java.time.DayOfWeek.THURSDAY), tareas = setOf(TipoTarea.CALCULO))
   private lateinit var acciones: AccionesFalsas
   private lateinit var vm: AlarmaViewModel
 
@@ -89,7 +90,7 @@ class AlarmaViewModelTest {
   }
 
   private fun vmFoto(): AlarmaViewModel {
-    val conFoto = alarma.copy(tarea = TipoTarea.FOTO)
+    val conFoto = alarma.copy(tareas = setOf(TipoTarea.FOTO))
     return AlarmaViewModel(acciones, flowOf(listOf(conFoto)), GeneradorCalculo(Random(9)), { ahora }, Random(4)).also {
       it.alCambiarSesion(EstadoSesion(conFoto, Modo.ALARMA, prueba = false, inicio = 0, inicioModo = 0))
     }
@@ -131,16 +132,102 @@ class AlarmaViewModelTest {
   }
 
   @Test
-  fun foto_pasarACalculo_yAcabarConElCalculo() {
+  fun foto_sinAlternativaElegida_pasaAlMinijuegoPorDefecto_yAcabaConEl() {
     val vm = vmFoto()
     vm.despierto()
-    vm.pasarACalculo()
-    assertEquals(TipoTarea.CALCULO, vm.tareaActual)
-    // La cámara ya no cuenta; el cálculo sí.
+    vm.pasarAAlternativa()
+    assertEquals(TipoTarea.PorDefecto, vm.tareaActual)
+    // La cámara ya no cuenta; el minijuego sí.
     vm.etiquetas(lasEtiquetasDe(vm.objeto))
     assertEquals(0, vm.vistosSeguidos)
-    repeat(3) { vm.calculo.operacion.resultado.toString().forEach { c -> vm.tecla(Tecla.Digito(c.digitToInt())) } }
+    repeat(vm.soles.total) { vm.atraparSol() }
     assertTrue(vm.fase is Fase.Hecho)
+  }
+
+  @Test
+  fun foto_conOtrasElegidas_pasaAUnaDeEllas() {
+    val varias = alarma.copy(tareas = setOf(TipoTarea.FOTO, TipoTarea.PAREJAS))
+    // Semillas hasta que al azar toque la foto (con dos posibles, sale enseguida).
+    val vm =
+      (0..50).asSequence().map { semilla ->
+        AlarmaViewModel(acciones, flowOf(listOf(varias)), reloj = { ahora }, azar = Random(semilla)).also {
+          it.alCambiarSesion(EstadoSesion(varias, Modo.ALARMA, prueba = false, inicio = 0, inicioModo = 0))
+        }
+      }.first { it.tareaActual == TipoTarea.FOTO }
+    vm.despierto()
+    vm.pasarAAlternativa()
+    assertEquals(TipoTarea.PAREJAS, vm.tareaActual)
+  }
+
+  @Test
+  fun variasActividades_cadaVezUnaAlAzar_yTodasSalen() {
+    val todas = TipoTarea.entries.toSet()
+    val varias = alarma.copy(tareas = todas)
+    val salidas =
+      (0 until 300).map { semilla ->
+        AlarmaViewModel(acciones, flowOf(listOf(varias)), reloj = { ahora }, azar = Random(semilla))
+          .also { it.alCambiarSesion(EstadoSesion(varias, Modo.ALARMA, prueba = false, inicio = 0, inicioModo = 0)) }
+          .tareaActual
+      }
+    assertEquals(todas, salidas.toSet())
+  }
+
+  /** Un ViewModel con una alarma de una sola actividad, ya en la tarea. */
+  private fun vmCon(tarea: TipoTarea, semilla: Int = 1): AlarmaViewModel {
+    val con = alarma.copy(tareas = setOf(tarea))
+    return AlarmaViewModel(acciones, flowOf(listOf(con)), reloj = { ahora }, azar = Random(semilla)).also {
+      it.alCambiarSesion(EstadoSesion(con, Modo.ALARMA, prueba = false, inicio = 0, inicioModo = 0))
+      it.despierto()
+    }
+  }
+
+  @Test
+  fun soles_atraparLos12_terminaLaAlarma() {
+    val vm = vmCon(TipoTarea.SOLES)
+    repeat(11) { vm.atraparSol() }
+    vm.escaparSol()
+    assertFalse(acciones.terminada)
+    vm.atraparSol()
+    assertTrue(vm.fase is Fase.Hecho)
+    assertTrue(acciones.silencios >= 12)
+  }
+
+  @Test
+  fun secuencia_repetirLasDosRondas_terminaLaAlarma() {
+    val vm = vmCon(TipoTarea.SECUENCIA)
+    repeat(vm.secuencia.longitudes.size) {
+      vm.secuenciaMostrada()
+      vm.secuencia.secuencia.toList().forEach { vm.pulsarSecuencia(it) }
+    }
+    assertTrue(vm.fase is Fase.Hecho)
+  }
+
+  @Test
+  fun parejas_encontrarlasTodas_terminaLaAlarma() {
+    val vm = vmCon(TipoTarea.PAREJAS)
+    val cartas = vm.parejas.cartas
+    for (simbolo in 0 until vm.parejas.pares) {
+      val (a, b) = cartas.indices.filter { cartas[it] == simbolo }
+      vm.tocarCarta(a)
+      vm.tocarCarta(b)
+    }
+    assertTrue(vm.fase is Fase.Hecho)
+  }
+
+  @Test
+  fun orden_del1al12_terminaLaAlarma() {
+    val vm = vmCon(TipoTarea.ORDEN)
+    assertEquals(false, vm.tocarNumero(5))
+    (1..12).forEach { vm.tocarNumero(it) }
+    assertTrue(vm.fase is Fase.Hecho)
+  }
+
+  @Test
+  fun unJuegoNoResponde_siLaActividadEsOtra() {
+    val vm = vmCon(TipoTarea.ORDEN)
+    repeat(20) { vm.atraparSol() }
+    assertEquals(0, vm.soles.aciertos)
+    assertFalse(vm.fase is Fase.Hecho)
   }
 
   @Test

@@ -87,8 +87,8 @@ import kotlinx.coroutines.delay
 /** Degradado de fondo: melocotón arriba, casi blanco abajo. */
 private val FondoAmanecer = Brush.verticalGradient(listOf(Color(0xFFFFDDB0), Color(0xFFFFF1E0), Color(0xFFF8F5F1)))
 
-private val Negro = Color(0xFF000000)
-private val Blanco = Color(0xFFFFFFFF)
+internal val Negro = Color(0xFF000000)
+internal val Blanco = Color(0xFFFFFFFF)
 
 /** La pantalla según el momento: sonando, tarea, comprobación o hecho. */
 @Composable
@@ -102,24 +102,33 @@ fun PantallaAlarma(vm: AlarmaViewModel, onCerrar: () -> Unit) {
       val limite = sesion.inicioModo + SesionAlarma.Ajustes().esperaComprobacion
       AlarmaComprobacion(segundosHasta(limite) ?: 0, vm::responderComprobacion)
     }
-    fase == Fase.Tarea && vm.tareaActual == TipoTarea.FOTO -> TareaFoto(vm, segundosHasta(sesion.silenciadaHasta))
-    fase == Fase.Tarea ->
-      AlarmaCalculo(
-        operacion = vm.calculo.operacion,
-        respuesta = vm.calculo.respuesta,
-        aciertos = vm.calculo.aciertos,
-        total = vm.calculo.total,
-        fallos = vm.calculo.fallos,
-        segundosSilencio = segundosHasta(sesion.silenciadaHasta),
-        onTecla = { vm.tecla(it) },
-      )
+    fase == Fase.Tarea -> {
+      val silencio = segundosHasta(sesion.silenciadaHasta)
+      when (vm.tareaActual) {
+        TipoTarea.FOTO -> TareaFoto(vm, silencio)
+        TipoTarea.CALCULO ->
+          AlarmaCalculo(
+            operacion = vm.calculo.operacion,
+            respuesta = vm.calculo.respuesta,
+            aciertos = vm.calculo.aciertos,
+            total = vm.calculo.total,
+            fallos = vm.calculo.fallos,
+            segundosSilencio = silencio,
+            onTecla = { vm.tecla(it) },
+          )
+        TipoTarea.SOLES -> AlarmaSoles(vm.soles, silencio, vm::atraparSol, vm::escaparSol)
+        TipoTarea.SECUENCIA -> AlarmaSecuencia(vm.secuencia, silencio, { vm.pulsarSecuencia(it) }, vm::secuenciaMostrada)
+        TipoTarea.PAREJAS -> AlarmaParejas(vm.parejas, silencio, { vm.tocarCarta(it) }, vm::ocultarCartas)
+        TipoTarea.ORDEN -> AlarmaOrden(vm.orden, silencio) { vm.tocarNumero(it) }
+      }
+    }
     else -> AlarmaSonando(sesion.alarma, rememberAhora(), sesion.prueba, vm::despierto, tarea = vm.tareaActual)
   }
 }
 
 /**
  * La tarea de foto con su cámara. Sin permiso de cámara, o si la cámara falla, pasa a
- * cálculo: la alarma siempre se tiene que poder apagar.
+ * otra actividad: la alarma siempre se tiene que poder apagar.
  */
 @Composable
 private fun TareaFoto(vm: AlarmaViewModel, segundosSilencio: Int?) {
@@ -127,7 +136,7 @@ private fun TareaFoto(vm: AlarmaViewModel, segundosSilencio: Int?) {
   val hayPermiso =
     ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED
   if (!hayPermiso) {
-    LaunchedEffect(Unit) { vm.pasarACalculo() }
+    LaunchedEffect(Unit) { vm.pasarAAlternativa() }
     return
   }
   // Buscando no se toca la pantalla: durante un minuto y medio la búsqueda pide
@@ -138,22 +147,22 @@ private fun TareaFoto(vm: AlarmaViewModel, segundosSilencio: Int?) {
       delay(10_000)
     }
   }
-  // Si en 45 s no lo reconoce (luz, un objeto raro...), aparece la salida al cálculo.
-  var mostrarCalculo by remember { mutableStateOf(false) }
+  // Si en 45 s no lo reconoce (luz, un objeto raro...), aparece la salida a otra actividad.
+  var mostrarOtra by remember { mutableStateOf(false) }
   LaunchedEffect(Unit) {
     delay(45_000)
-    mostrarCalculo = true
+    mostrarOtra = true
   }
   AlarmaFoto(
     objeto = vm.objeto,
     vistosSeguidos = vm.vistosSeguidos,
     segundosSilencio = segundosSilencio,
     cambiosRestantes = vm.cambiosRestantes,
-    mostrarCalculo = mostrarCalculo,
+    mostrarCalculo = mostrarOtra,
     onCambiar = vm::cambiarObjeto,
-    onCalculo = vm::pasarACalculo,
+    onCalculo = vm::pasarAAlternativa,
   ) { modifier ->
-    CamaraReconocedora(onEtiquetas = vm::etiquetas, onError = vm::pasarACalculo, modifier = modifier)
+    CamaraReconocedora(onEtiquetas = vm::etiquetas, onError = vm::pasarAAlternativa, modifier = modifier)
   }
 }
 
@@ -172,7 +181,7 @@ private fun segundosHasta(limite: Long?): Int? {
 
 /** Fondo y márgenes comunes a todos los estados. */
 @Composable
-private fun FondoAlarma(contenido: @Composable ColumnScope.() -> Unit) {
+internal fun FondoAlarma(contenido: @Composable ColumnScope.() -> Unit) {
   Column(
     Modifier.fillMaxSize().background(FondoAmanecer).windowInsetsPadding(WindowInsets.safeDrawing).padding(horizontal = 24.dp),
     horizontalAlignment = Alignment.CenterHorizontally,
@@ -215,7 +224,7 @@ fun AlarmaSonando(
   ahora: LocalDateTime,
   prueba: Boolean,
   onDespierto: () -> Unit,
-  tarea: TipoTarea = alarma.tarea,
+  tarea: TipoTarea = alarma.tareas.first(),
 ) {
   val idioma = LocalConfiguration.current.locales[0]
   val fecha = remember(ahora.toLocalDate(), idioma) {
@@ -243,8 +252,14 @@ fun AlarmaSonando(
     BotonAlarma(stringResource(R.string.estoy_despierto), onDespierto)
     Spacer(Modifier.height(12.dp))
     Text(
-      if (tarea == TipoTarea.FOTO) stringResource(R.string.pista_foto)
-      else pluralStringResource(R.plurals.pista_calculo, OperacionesParaApagar, OperacionesParaApagar),
+      when (tarea) {
+        TipoTarea.FOTO -> stringResource(R.string.pista_foto)
+        TipoTarea.CALCULO -> pluralStringResource(R.plurals.pista_calculo, OperacionesParaApagar, OperacionesParaApagar)
+        TipoTarea.SOLES -> stringResource(R.string.pista_soles)
+        TipoTarea.SECUENCIA -> stringResource(R.string.pista_secuencia)
+        TipoTarea.PAREJAS -> stringResource(R.string.pista_parejas)
+        TipoTarea.ORDEN -> stringResource(R.string.pista_orden)
+      },
       style = Alba.tipos.nota,
       color = Alba.colores.textoSecundario,
       textAlign = TextAlign.Center,
@@ -307,7 +322,7 @@ fun AlarmaCalculo(
 
 /** Línea de estado del sonido durante la tarea. */
 @Composable
-private fun EstadoSonido(segundosSilencio: Int?, textoSonando: Int) {
+internal fun EstadoSonido(segundosSilencio: Int?, textoSonando: Int) {
   Text(
     if (segundosSilencio != null) stringResource(R.string.silencio_quedan, segundosSilencio) else stringResource(textoSonando),
     style = Alba.tipos.nota,
@@ -369,7 +384,7 @@ fun AlarmaFoto(
           color = Alba.colores.texto,
         )
       }
-      if (mostrarCalculo) BotonTexto(stringResource(R.string.mejor_calculo), onCalculo, color = Alba.colores.texto)
+      if (mostrarCalculo) BotonTexto(stringResource(R.string.otra_actividad), onCalculo, color = Alba.colores.texto)
     }
     Spacer(Modifier.height(12.dp))
   }

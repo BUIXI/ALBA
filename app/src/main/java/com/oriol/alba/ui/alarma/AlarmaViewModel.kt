@@ -15,6 +15,12 @@ import com.oriol.alba.alarma.ServicioAlarma
 import com.oriol.alba.datos.Alarma
 import com.oriol.alba.datos.TipoTarea
 import com.oriol.alba.dominio.CambiosDeObjeto
+import com.oriol.alba.dominio.alternativaA
+import com.oriol.alba.dominio.elegirTarea
+import com.oriol.alba.ui.tareas.EstadoOrden
+import com.oriol.alba.ui.tareas.EstadoParejas
+import com.oriol.alba.ui.tareas.EstadoSecuencia
+import com.oriol.alba.ui.tareas.EstadoSoles
 import com.oriol.alba.dominio.DetectorSeguido
 import com.oriol.alba.dominio.Etiqueta
 import com.oriol.alba.dominio.GeneradorCalculo
@@ -77,8 +83,25 @@ class AlarmaViewModel(
   var calculo by mutableStateOf(EstadoCalculo(generador))
     private set
 
-  /** La tarea que se está haciendo. Empieza siendo la de la alarma; la foto puede pasar a cálculo. */
-  var tareaActual: TipoTarea by mutableStateOf(TipoTarea.CALCULO)
+  /**
+   * La actividad de esta vez: una al azar entre las de la alarma, elegida al empezar a
+   * sonar. La foto puede cambiarse por otra si no hay cámara.
+   */
+  var tareaActual: TipoTarea by mutableStateOf(TipoTarea.PorDefecto)
+    private set
+
+  // --- Minijuegos (se crean de nuevo con cada alarma) ---
+
+  var soles by mutableStateOf(EstadoSoles(azar))
+    private set
+
+  var secuencia by mutableStateOf(EstadoSecuencia(azar))
+    private set
+
+  var parejas by mutableStateOf(EstadoParejas(azar))
+    private set
+
+  var orden by mutableStateOf(EstadoOrden(azar))
     private set
 
   // --- Tarea de foto ---
@@ -110,7 +133,7 @@ class AlarmaViewModel(
     // Otra alarma distinta (por ejemplo, la comprobación con esta pantalla aún abierta
     // en "Buenos días"): se empieza de cero.
     if (anterior != null && nueva.inicio != anterior.inicio) reiniciar()
-    if (!vioSesion || anterior?.inicio != nueva.inicio) tareaActual = nueva.alarma.tarea
+    if (!vioSesion || anterior?.inicio != nueva.inicio) tareaActual = elegirTarea(nueva.alarma.tareas, azar)
     sesion = nueva
     vioSesion = true
   }
@@ -118,6 +141,10 @@ class AlarmaViewModel(
   private fun reiniciar() {
     fase = Fase.Sonando
     calculo = EstadoCalculo(generador)
+    soles = EstadoSoles(azar)
+    secuencia = EstadoSecuencia(azar)
+    parejas = EstadoParejas(azar)
+    orden = EstadoOrden(azar)
     objeto = objetoAlAzar(azar)
     pedidos.clear()
     pedidos += objeto
@@ -150,12 +177,61 @@ class AlarmaViewModel(
     if (fase is Fase.Tarea && tareaActual == TipoTarea.FOTO) acciones.silenciar()
   }
 
-  /** Sin cámara (o si no reconoce nada): cálculo. La alarma siempre se tiene que poder apagar. */
-  fun pasarACalculo() {
-    if (tareaActual == TipoTarea.CALCULO) return
-    tareaActual = TipoTarea.CALCULO
+  /**
+   * Sin cámara (o si no reconoce nada): otra de las actividades de la alarma, o un
+   * minijuego. La alarma siempre se tiene que poder apagar.
+   */
+  fun pasarAAlternativa() {
+    val otra = alternativaA(tareaActual, sesion?.alarma?.tareas.orEmpty())
+    if (otra == tareaActual) return
+    tareaActual = otra
     if (fase is Fase.Tarea) acciones.silenciar()
   }
+
+  // --- Minijuegos: cada toque alarga el silencio; al completarlo, se acaba la alarma ---
+
+  fun atraparSol() {
+    if (!haciendo(TipoTarea.SOLES)) return
+    acciones.silenciar()
+    soles.atrapar()
+    if (soles.completado) completar(fueComprobacion = false)
+  }
+
+  fun escaparSol() {
+    if (haciendo(TipoTarea.SOLES)) soles.escapar()
+  }
+
+  fun pulsarSecuencia(boton: Int): Boolean? {
+    if (!haciendo(TipoTarea.SECUENCIA)) return null
+    acciones.silenciar()
+    val resultado = secuencia.pulsar(boton)
+    if (secuencia.completado) completar(fueComprobacion = false)
+    return resultado
+  }
+
+  fun secuenciaMostrada() {
+    if (haciendo(TipoTarea.SECUENCIA)) secuencia.terminarDeMostrar()
+  }
+
+  fun tocarCarta(carta: Int): Boolean? {
+    if (!haciendo(TipoTarea.PAREJAS)) return null
+    acciones.silenciar()
+    val resultado = parejas.tocar(carta)
+    if (parejas.completado) completar(fueComprobacion = false)
+    return resultado
+  }
+
+  fun ocultarCartas() = parejas.ocultar()
+
+  fun tocarNumero(numero: Int): Boolean? {
+    if (!haciendo(TipoTarea.ORDEN)) return null
+    acciones.silenciar()
+    val resultado = orden.tocar(numero)
+    if (orden.completado) completar(fueComprobacion = false)
+    return resultado
+  }
+
+  private fun haciendo(tarea: TipoTarea) = fase is Fase.Tarea && tareaActual == tarea
 
   /** "Estoy despierto" o una tecla de volumen: silencio y a la tarea. */
   fun despierto() {

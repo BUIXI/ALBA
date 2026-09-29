@@ -5,7 +5,9 @@ probarla en el móvil: [`PRUEBAS_EN_EL_MOVIL.md`](PRUEBAS_EN_EL_MOVIL.md).
 
 ## Estado
 
-Versión **0.1.1**: primera versión funcional (MVP), pendiente de probar en el Realme.
+Versión **0.2**: minijuegos y varias actividades por alarma
+([`fases/version02-minijuegos.md`](fases/version02-minijuegos.md), con la guía para
+añadir actividades). Pendiente de probar en el Realme.
 
 **Idiomas** (0.1.1): inglés por defecto (`values/`) y español (`values-es/`); la app
 elige sola según el idioma del móvil. Los días, el primer día de la semana y las
