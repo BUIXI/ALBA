@@ -38,11 +38,11 @@ for k, t0 in T.items():
     voces.append(f'[{k}]')
 filtros.append(f"{''.join(voces)}amix=inputs={len(voces)}:normalize=0,highpass=f=80,"
                f"equalizer=f=3000:t=q:w=1.2:g=1.5,acompressor=threshold=-22dB:ratio=2.5:attack=10:release=150:makeup=2,"
-               f"apad=whole_dur={FIN},volume=1.5,asplit=2[voz][vozsc]")
+               f"apad=whole_dur={FIN},volume=1.9,asplit=2[voz][vozsc]")
 
 m = entrada(['-ss', f'{V.MUSICA_DESDE:.3f}', '-i', V.MUSICA])
 filtros.append(f'[{m}]aresample={SR},atrim=0:{FIN},volume=0.55,afade=t=out:st={FIN - 2.4}:d=2.3[mus]')
-filtros.append('[mus][vozsc]sidechaincompress=threshold=0.03:ratio=3:attack=40:release=500[musd]')
+filtros.append('[mus][vozsc]sidechaincompress=threshold=0.025:ratio=4:attack=30:release=450[musd]')
 
 def efecto(ruta, desde, dur, en, vol):
     i = entrada(['-ss', str(desde), '-t', str(dur + 0.05), '-i', ruta])
@@ -71,7 +71,7 @@ efecto(f'{BASE}/sfx/tic.wav', 0, 0.25, t_tele, 0.5)
 t_hecho = fin_de_escena(t_tele)
 efecto(f'{BASE}/sfx/encontrado.wav', 0, 1.2, t_hecho, 0.8)
 t_m5 = fin_de_escena(t_hecho)
-alba(t_m5, fin_de_escena(t_m5), 0.35)               # "vuelve a sonar"
+alba(V.palabra('m5', 8) + 0.3, fin_de_escena(t_m5), 0.4)  # suena justo después de "sonar"
 
 filtros.append('[voz]aformat=channel_layouts=stereo[vozst]')
 filtros.append(f"[vozst][musd]{''.join(pistas)}amix=inputs={2 + len(pistas)}:normalize=0,atrim=0:{FIN},"
