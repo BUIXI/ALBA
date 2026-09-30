@@ -55,7 +55,7 @@ class CapturasAnuncioTest {
     capturar("anuncio_sonando")
   }
 
-  private fun foto(nombre: String, vistos: Int, silencio: Int, fondo: Color) {
+  private fun foto(nombre: String, vistos: Int, silencio: Int?, fondo: Color) {
     composeRule.setContent {
       TemaAlba(PaletaClara) {
         AlarmaFoto(
@@ -81,6 +81,11 @@ class CapturasAnuncioTest {
   @Test fun viendoNegro() = foto("anuncio_foto_viendo_negro", vistos = 2, silencio = 81, fondo = Color.Black)
 
   @Test fun viendoBlanco() = foto("anuncio_foto_viendo_blanco", vistos = 2, silencio = 81, fondo = Color.White)
+
+  /** Pasado el minuto y medio de silencio vuelve a sonar hasta encontrar el objeto (el gancho del anuncio). */
+  @Test fun sonandoNegro() = foto("anuncio_foto_sonando_negro", vistos = 2, silencio = null, fondo = Color.Black)
+
+  @Test fun sonandoBlanco() = foto("anuncio_foto_sonando_blanco", vistos = 2, silencio = null, fondo = Color.White)
 
   @Test
   fun hecha() {
