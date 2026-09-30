@@ -55,11 +55,11 @@ class CapturasAnuncioTest {
     capturar("anuncio_sonando")
   }
 
-  private fun foto(nombre: String, vistos: Int, silencio: Int?, fondo: Color) {
+  private fun foto(nombre: String, vistos: Int, silencio: Int?, fondo: Color, objeto: ObjetoFoto = ObjetoFoto.TAZA) {
     composeRule.setContent {
       TemaAlba(PaletaClara) {
         AlarmaFoto(
-          objeto = ObjetoFoto.TAZA,
+          objeto = objeto,
           vistosSeguidos = vistos,
           segundosSilencio = silencio,
           cambiosRestantes = 2,
@@ -86,6 +86,32 @@ class CapturasAnuncioTest {
   @Test fun sonandoNegro() = foto("anuncio_foto_sonando_negro", vistos = 2, silencio = null, fondo = Color.Black)
 
   @Test fun sonandoBlanco() = foto("anuncio_foto_sonando_blanco", vistos = 2, silencio = null, fondo = Color.White)
+
+  // Anuncio 04: la cámara reconociendo cada objeto (montaje rápido). Una prueba por
+  // captura: setContent solo se puede llamar una vez en cada una.
+  private fun objeto(objeto: ObjetoFoto, fondo: Color) =
+    foto("anuncio_objeto_${objeto.name.lowercase()}_${if (fondo == Color.Black) "negro" else "blanco"}", 2, 81, fondo, objeto)
+
+  @Test fun fregaderoNegro() = objeto(ObjetoFoto.FREGADERO, Color.Black)
+
+  @Test fun fregaderoBlanco() = objeto(ObjetoFoto.FREGADERO, Color.White)
+
+  @Test fun sofaNegro() = objeto(ObjetoFoto.SOFA, Color.Black)
+
+  @Test fun sofaBlanco() = objeto(ObjetoFoto.SOFA, Color.White)
+
+  @Test fun plantaNegro() = objeto(ObjetoFoto.PLANTA, Color.Black)
+
+  @Test fun plantaBlanco() = objeto(ObjetoFoto.PLANTA, Color.White)
+
+  @Test fun teleNegro() = objeto(ObjetoFoto.TELE, Color.Black)
+
+  @Test fun teleBlanco() = objeto(ObjetoFoto.TELE, Color.White)
+
+  // Gancho del anuncio 04: suena y pide un fregadero (aún no lo ve)
+  @Test fun fregaderoSonandoNegro() = foto("anuncio_fregadero_sonando_negro", 0, null, Color.Black, ObjetoFoto.FREGADERO)
+
+  @Test fun fregaderoSonandoBlanco() = foto("anuncio_fregadero_sonando_blanco", 0, null, Color.White, ObjetoFoto.FREGADERO)
 
   @Test
   fun hecha() {
