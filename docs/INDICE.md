@@ -45,7 +45,7 @@ selector de idioma por app (Android 13+) y más idiomas.
 | Anuncio | Qué es |
 |---|---|
 | [`anuncio02-la-taza.md`](anuncios/anuncio02-la-taza.md) | Guion para grabar con un actor: la taza y la cocina |
-| [`anuncio03-a-la-primera.md`](anuncios/anuncio03-a-la-primera.md) | Vídeo hecho en la nube: planos de Mixkit, capturas reales de la app, voz sintética. Se rehace con `tools/anuncios/` |
+| [`anuncio03-a-la-primera.md`](anuncios/anuncio03-a-la-primera.md) | Vídeo hecho en la nube (versión 2): gancho, alarma del móvil, capturas reales de la app, voz de Chatterbox y cortes al pulso de la música. Se rehace con `tools/anuncios/` |
 
 ## Pruebas
 
