@@ -453,7 +453,7 @@ def main():
         return
     enc = subprocess.Popen(['ffmpeg', '-v', 'error', '-y', '-f', 'rawvideo', '-pix_fmt', 'rgb24', '-s', f'{W}x{H}',
                             '-r', str(FPS), '-i', '-',
-                            '-vf', 'vignette=angle=0.45,noise=alls=5:allf=t',
+                            '-vf', 'vignette=angle=0.45',
                             '-c:v', 'libx264', '-preset', 'medium', '-crf', '16', '-pix_fmt', 'yuv420p', salida],
                            stdin=subprocess.PIPE)
     n = int(DURACION * FPS)
