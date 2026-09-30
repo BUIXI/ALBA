@@ -5,6 +5,10 @@ mental...) para apagarla. Kotlin + Jetpack Compose. Qué es y qué se ha decidid
 [`docs/PRODUCTO.md`](docs/PRODUCTO.md). Qué hay hecho, fase a fase:
 [`docs/INDICE.md`](docs/INDICE.md). Léelos antes de tocar nada.
 
+**Mapa del código (bóveda de Obsidian): [`mapa/00 Indice.md`](mapa/00%20Indice.md).**
+Léelo primero y luego solo la nota del tema; no recorras el código entero. Al
+cambiar código, actualiza la nota afectada y el `commit:` del índice.
+
 ## Entorno en este PC
 
 - JDK 17 (Temurin): `C:\Program Files\Eclipse Adoptium\jdk-17.0.20.101-hotspot`

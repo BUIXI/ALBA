@@ -21,6 +21,9 @@ local.properties
 *.keystore
 keystore.properties
 
+# Obsidian (configuración local de la bóveda; el mapa en mapa/ sí va a Git)
+.obsidian/
+
 # Sistema
 .DS_Store
 Thumbs.db
