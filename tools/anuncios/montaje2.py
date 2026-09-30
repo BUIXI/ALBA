@@ -55,8 +55,8 @@ GOLPE_PISTA = 9.06  # donde entra la batería en la pista
 def horario():
     """Cuándo empieza cada frase. Todo encadenado, con respiraciones cortas."""
     orden = ['h1', 'h2', 'v01', 'v02', 'v03', 'v04', 'v05', 'v06', 'v07', 'v08', 'v09', 'v10', 'v11', 'v12']
-    pausa = {'h2': 0.30, 'v01': 0.35, 'v02': 0.30, 'v03': 0.40, 'v04': 0.35, 'v05': 0.55, 'v06': 0.35,
-             'v07': 0.45, 'v08': 0.45, 'v09': 0.25, 'v10': 0.55, 'v11': 0.45, 'v12': 0.90}
+    pausa = {'h2': 0.30, 'v01': 0.35, 'v02': 0.30, 'v03': 0.40, 'v04': 0.35, 'v05': 0.55, 'v06': 0.50,
+             'v07': 0.45, 'v08': 0.45, 'v09': 0.25, 'v10': 1.00, 'v11': 0.45, 'v12': 0.90}
     t = {'h1': 0.20}
     for a, b in zip(orden, orden[1:]):
         t[b] = t[a] + DUR[a] + pausa[b]
@@ -229,7 +229,7 @@ def escenas():
     c_pies = pulso(palabra('v06', 6))
     fin_v06 = pulso(fin_frase('v06') + 0.2)
     plano(c_tazas, c_pies, Plano('50754', 10.5, c_pies - c_tazas, cx=(2750, 2800), z=(1.05, 1.1)), 'calido')
-    plano(c_pies, fin_v06, Plano('50764', 0.0, fin_v06 - c_pies, cx=(1400, 1500), z=(1.0, 1.05)), 'calido')
+    plano(c_pies, fin_v06, Plano('50764', 0.4, fin_v06 - c_pies, cx=(1400, 1500), z=(1.0, 1.05)), 'calido')
 
     # "La apuntas con la cámara, la reconoce… y se calla."
     viendo = palabra('v07', 6)       # "reconoce"
