@@ -12,8 +12,12 @@ mkdir -p "$A/clips" "$A/musica" "$A/sfx"
 #  50770 sorbo de café · 50771 cocina con el móvil · 50760 brazos al cielo
 #  50759 azotea · 808 taza humeante (lo que ve la cámara)
 #  39786 (versión 2) la mano que pospone la alarma del móvil; se recorta sin cara
-for i in 50753 50931 50752 50754 50757 50764 50768 50770 50771 50760 50759 808 39786; do
-  [ -s "$A/clips/$i.mp4" ] || curl -sSfL -o "$A/clips/$i.mp4" "https://assets.mixkit.co/videos/$i/$i-2160.mp4"
+#  (vídeo 04) 3891 grifo del fregadero · 3110 salón con sofá gris · 51044 cactus en maceta · 46291 tele
+for i in 50753 50931 50752 50754 50757 50764 50768 50770 50771 50760 50759 808 39786 3891 3110 51044 46291; do
+  [ -s "$A/clips/$i.mp4" ] && continue
+  for r in 2160 1080 720; do  # no todos existen en 4K
+    curl -sSfL -o "$A/clips/$i.mp4" "https://assets.mixkit.co/videos/$i/$i-$r.mp4" && break
+  done
 done
 
 # Música: "Possible Dreams" (Do mayor, 86 bpm; crece hacia el segundo 22).
@@ -21,6 +25,9 @@ done
 
 # Música de la versión 2: "Lo-Fi 04" (Fa mayor; la batería entra en el segundo 9,06).
 [ -s "$A/musica/766.mp3" ] || curl -sSfL -o "$A/musica/766.mp3" https://assets.mixkit.co/music/766/766.mp3
+
+# Música del vídeo 04: "Pop 07" (Fa mayor, 90 bpm, mucha percusión desde el primer segundo).
+[ -s "$A/musica/699.mp3" ] || curl -sSfL -o "$A/musica/699.mp3" https://assets.mixkit.co/music/699/699.mp3
 
 # Efectos (versión 1): despertador de campanas, impacto de entrada y transición.
 curl -sSfL -o "$A/sfx/bell_1003.mp3" https://assets.mixkit.co/active_storage/sfx/1003/1003-preview.mp3

@@ -46,6 +46,7 @@ selector de idioma por app (Android 13+) y más idiomas.
 |---|---|
 | [`anuncio02-la-taza.md`](anuncios/anuncio02-la-taza.md) | Guion para grabar con un actor: la taza y la cocina |
 | [`anuncio03-a-la-primera.md`](anuncios/anuncio03-a-la-primera.md) | Vídeo hecho en la nube (versión 2): gancho, alarma del móvil, capturas reales de la app, voz de Chatterbox y cortes al pulso de la música. Se rehace con `tools/anuncios/` |
+| [`anuncio04-la-mas-odiada.md`](anuncios/anuncio04-la-mas-odiada.md) | Vídeo 04: "Hemos hecho la alarma más odiada del mundo". Los que hacemos Alba, a los que posponen; montaje de objetos a golpe de música. `tools/anuncios/montaje4.py` |
 
 ## Pruebas
 

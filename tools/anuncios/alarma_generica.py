@@ -46,3 +46,39 @@ def pantalla(hora, toque=None):
 
 if __name__ == '__main__':
     pantalla('07:05', 0.1).save('alarma_generica.png')
+
+
+@functools.lru_cache(None)
+def _fila(hora):
+    im = Image.new('RGB', (AW - 120, 230), (28, 28, 31))
+    d = ImageDraw.Draw(im)
+    d.text((60, 115), hora, font=_f('Inter-Light', 120), fill=(245, 245, 247), anchor='lm')
+    d.text((60 + 400, 130), 'Alarma', font=_f('Inter-Regular', 44), fill=(140, 140, 146), anchor='lm')
+    # interruptor encendido (genérico)
+    x0, y0 = AW - 120 - 230, 80
+    d.rounded_rectangle((x0, y0, x0 + 150, y0 + 80), 40, fill=(90, 160, 255))
+    d.ellipse((x0 + 76, y0 + 6, x0 + 144, y0 + 74), fill=(255, 255, 255))
+    return im
+
+
+def lista(visibles, t_ultima=1.0):
+    """Lista de alarmas de un móvil cualquiera: 07:00, 07:05... se ven `visibles` filas;
+    la última entra con un pequeño salto (t_ultima: segundos desde que apareció)."""
+    im = Image.new('RGB', (AW, AH), (12, 12, 14))
+    d = ImageDraw.Draw(im)
+    d.text((80, 330), 'Alarmas', font=_f('Inter-Bold', 110), fill=(245, 245, 247), anchor='lm')
+    horas = ['07:00', '07:05', '07:10', '07:15', '07:20', '07:25', '07:30']
+    for i in range(min(visibles, len(horas))):
+        y = 520 + i * 270
+        fila = _fila(horas[i])
+        if i == visibles - 1 and t_ultima < 0.25:
+            u = t_ultima / 0.25
+            esc = 0.85 + 0.15 * (1 - (1 - u) ** 3)
+            f2 = fila.resize((int(fila.width * esc), int(fila.height * esc)))
+            m = Image.new('L', f2.size, int(255 * min(1, u * 1.5)))
+            im.paste(f2, (60 + (fila.width - f2.width) // 2, y + (fila.height - f2.height) // 2), m)
+        else:
+            mascara = Image.new('L', fila.size, 0)
+            ImageDraw.Draw(mascara).rounded_rectangle((0, 0, fila.width - 1, fila.height - 1), 40, fill=255)
+            im.paste(fila, (60, y), mascara)
+    return im

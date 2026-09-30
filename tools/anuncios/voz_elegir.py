@@ -3,7 +3,7 @@
 import glob, json, os, re, subprocess, difflib
 from faster_whisper import WhisperModel
 
-D = os.path.join(os.environ.get('ANUNCIO', os.path.expanduser('~/anuncio')), 'voz2')
+D = os.path.join(os.environ.get('ANUNCIO', os.path.expanduser('~/anuncio')), os.environ.get('ANUNCIO_VOZ', 'voz2'))
 L = json.load(open(f'{D}/textos.json'))
 os.makedirs(f'{D}/elegidas', exist_ok=True)
 m = WhisperModel('small', device='cpu', compute_type='int8')
