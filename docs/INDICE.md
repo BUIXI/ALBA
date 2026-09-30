@@ -40,6 +40,13 @@ selector de idioma por app (Android 13+) y más idiomas.
 
 `tools/GenerarSonido.java` genera `res/raw/amanecer.wav`.
 
+## Anuncios para redes (`docs/anuncios/`)
+
+| Anuncio | Qué es |
+|---|---|
+| [`anuncio02-la-taza.md`](anuncios/anuncio02-la-taza.md) | Guion para grabar con un actor: la taza y la cocina |
+| [`anuncio03-a-la-primera.md`](anuncios/anuncio03-a-la-primera.md) | Vídeo hecho en la nube: planos de Mixkit, capturas reales de la app, voz sintética. Se rehace con `tools/anuncios/` |
+
 ## Pruebas
 
 71 pruebas locales, todas en el PC: `gradlew testDebugUnitTest`. Detalle en los
